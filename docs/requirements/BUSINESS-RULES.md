@@ -1,0 +1,292 @@
+# Business Rules
+
+**Project:** Task 2 — E-Commerce Marketplace  
+**Source of truth:** `docs/requirements/Task_2_Complete_Ecommerce_Marketplace_Specification.pdf`  
+**Canonical requirements:** [SRS.md](SRS.md)  
+**Related:** [USER-STORIES.md](USER-STORIES.md), [ACCEPTANCE-CRITERIA.md](ACCEPTANCE-CRITERIA.md), [DATABASE-ERD.md](../architecture/DATABASE-ERD.md)
+
+## Status vocabulary
+
+| Status | Meaning |
+|---|---|
+| **Mandatory** | Directly stated in the PDF or required by a scope requirement/checklist. |
+| **Conditional** | Applies only when the PDF’s qualifier applies, e.g. “if enabled”, “where supported”, “subject to policy”. |
+| **Decision required** | The PDF leaves a value, policy, model, or state transition unresolved. See [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm). |
+
+> This document does not define numeric thresholds, commission percentages, settlement schedules, return windows, SLA values, or other unresolved business values. Those remain [DEC-001](SRS.md#12-unresolved-decisions-and-items-to-confirm)–[DEC-024](SRS.md#12-unresolved-decisions-and-items-to-confirm).
+
+---
+
+## 1. Catalogue and product listing rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-CAT-001 | Product create, view, edit, archive, and delete operations are subject to permissions and order-history retention rules. | Mandatory | [FR-CAT-001](SRS.md#31-product-catalogue--product-listing) |
+| BR-CAT-002 | Categories, subcategories, brands, collections, tags, and attributes are marketplace catalogue structures. | Mandatory | [FR-CAT-002](SRS.md#31-product-catalogue--product-listing) |
+| BR-CAT-003 | A product may have variants such as size, colour, material, model, and pack size; variant-level SKU, price, and stock are maintained. | Mandatory | [FR-CAT-003](SRS.md#31-product-catalogue--product-listing) |
+| BR-CAT-004 | Product content may include titles, descriptions, specifications, dimensions, weight, images, video, and downloadable documents. | Mandatory | [FR-CAT-004](SRS.md#31-product-catalogue--product-listing) |
+| BR-CAT-005 | SKU, barcode, product identifiers, configurable attributes, and validation are part of catalogue management. | Mandatory | [FR-CAT-005](SRS.md#31-product-catalogue--product-listing) |
+| BR-CAT-006 | Product status values are draft, submitted, under review, approved, rejected, published, inactive, and out of stock. Exact transition permissions and conditions remain to be detailed. | Mandatory values; transition rules decision required | [FR-CAT-006](SRS.md#31-product-catalogue--product-listing), [DEC-021](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-CAT-007 | Vendor product submission requires admin moderation; duplicate-listing detection and content guidelines apply. | Mandatory | [FR-CAT-007](SRS.md#31-product-catalogue--product-listing), [AC-003](ACCEPTANCE-CRITERIA.md) |
+| BR-CAT-008 | Bulk import/export using CSV or Excel must produce validation reports and error handling. | Mandatory | [FR-CAT-008](SRS.md#31-product-catalogue--product-listing) |
+| BR-CAT-009 | Product groupings include featured, new, trending, best-selling, related, and frequently-bought-together. | Mandatory | [FR-CAT-009](SRS.md#31-product-catalogue--product-listing) |
+| BR-CAT-010 | Physical, digital, configurable, bundle, and service products are supported only where applicable. | Conditional | [FR-CAT-010](SRS.md#31-product-catalogue--product-listing), [DEC-003](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+
+```mermaid
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Submitted: vendor submits
+    Submitted --> UnderReview: moderation starts
+    UnderReview --> Approved: moderator approves
+    UnderReview --> Rejected: moderator rejects with reason
+    Rejected --> Submitted: vendor resubmits (policy to confirm)
+    Approved --> Published: eligible for public visibility
+    Published --> Inactive: deactivated
+    Published --> OutOfStock: stock depleted
+    OutOfStock --> Published: stock restored (rule to confirm)
+    Inactive --> Published: reactivated (rule to confirm)
+```
+*Diagram note:* States are from the PDF. Transitions marked “policy/rule to confirm” are illustrative workflow connections and remain [DEC-021](SRS.md#12-unresolved-decisions-and-items-to-confirm).
+
+---
+
+## 2. Vendor onboarding and management rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-VEN-001 | Seller registration includes email/phone verification, application workflow, and onboarding checklist. | Mandatory | [FR-VEN-001](SRS.md#32-vendor--seller-management) |
+| BR-VEN-002 | KYC/business verification, tax details, bank account verification, and document expiry tracking are required. Protected/tokenized bank references are used. | Mandatory | [FR-VEN-002](SRS.md#32-vendor--seller-management), [SEC-PII-004](../architecture/SECURITY-ARCHITECTURE.md) |
+| BR-VEN-003 | Vendor approval, rejection, suspension, reactivation, and termination require recorded reasons. | Mandatory | [FR-VEN-003](SRS.md#32-vendor--seller-management) |
+| BR-VEN-004 | Vendor storefront profile includes logo, banner, description, policies, operating hours, and contact details. | Mandatory | [FR-VEN-004](SRS.md#32-vendor--seller-management) |
+| BR-VEN-005 | Vendor dashboard reports sales, orders, returns, inventory, ratings, commissions, and payouts. | Mandatory | [FR-VEN-005](SRS.md#32-vendor--seller-management) |
+| BR-VEN-006 | Vendor-specific listing, pricing, stock, shipping settings, and fulfilment preferences are maintained by the vendor. | Mandatory | [FR-VEN-006](SRS.md#32-vendor--seller-management) |
+| BR-VEN-007 | Admin product moderation and vendor policy compliance apply. | Mandatory | [FR-VEN-007](SRS.md#32-vendor--seller-management) |
+| BR-VEN-008 | Commission plans can be defined by vendor, category, product, or campaign using fixed and percentage models. | Mandatory | [FR-VEN-008](SRS.md#32-vendor--seller-management), [BR-FIN-008](#8-finance-settlement-and-ledger-rules) |
+| BR-VEN-009 | Vendor subscription plans and feature entitlements apply only if subscriptions are enabled. | Conditional | [FR-VEN-009](SRS.md#32-vendor--seller-management), [DEC-016](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-VEN-010 | Settlement statements, payout requests/approvals, payment status, and reconciliation are vendor-visible functions. | Mandatory | [FR-VEN-010](SRS.md#32-vendor--seller-management) |
+| BR-VEN-011 | Vendor performance scorecards include service-level metrics, cancellation rate, and return rate. | Mandatory | [FR-VEN-011](SRS.md#32-vendor--seller-management) |
+| BR-VEN-012 | Vendor staff perform tasks only under permissions assigned by the vendor owner; activity history is maintained. | Mandatory | [SRS-ROLE-004](SRS.md#2-user-roles-and-portals), [FR-VEN-012](SRS.md#32-vendor--seller-management) |
+
+---
+
+## 3. Customer account rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-CUS-001 | Registration/login/logout, email/phone verification, and password reset are customer account functions; social sign-in is optional. | Mandatory; social sign-in conditional | [FR-CUS-001](SRS.md#33-customer-accounts--crm) |
+| BR-CUS-002 | Customer profile, preferences, communication consent, and account security settings are maintained. | Mandatory | [FR-CUS-002](SRS.md#33-customer-accounts--crm) |
+| BR-CUS-003 | A customer may have multiple saved addresses and a default address; addresses are validated. | Mandatory | [FR-CUS-003](SRS.md#33-customer-accounts--crm) |
+| BR-CUS-004 | Customer segmentation, tags, account status, and support history are maintained. | Mandatory | [FR-CUS-004](SRS.md#33-customer-accounts--crm) |
+| BR-CUS-005 | Customer self-service includes order history, invoices, returns, refunds, wishlist, saved items, and recently viewed products. | Mandatory | [FR-CUS-005](SRS.md#33-customer-accounts--crm) |
+| BR-CUS-006 | Wallet/store credit requires ledger-based accounting and clear terms. | Conditional | [FR-CUS-006](SRS.md#33-customer-accounts--crm), [BR-FIN-002](#8-finance-settlement-and-ledger-rules) |
+| BR-CUS-007 | Loyalty points, tiers, and redemption apply only if enabled. | Conditional | [FR-CUS-007](SRS.md#33-customer-accounts--crm), [DEC-016](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-CUS-008 | Account deletion/export requests are handled in accordance with applicable privacy obligations. | Mandatory | [FR-CUS-008](SRS.md#33-customer-accounts--crm), [SEC-PRIV-005](../architecture/SECURITY-ARCHITECTURE.md) |
+
+---
+
+## 4. Pricing, tax and promotion rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-PRICE-001 | Supported price concepts are base price, sale price, vendor price, variant price, and scheduled price changes. | Mandatory | [FR-PRICE-001](SRS.md#35-pricing-tax--promotions) |
+| BR-PRICE-002 | Coupons may be percentage or fixed discounts and may have minimum basket rules and usage limits. | Mandatory | [FR-PRICE-002](SRS.md#35-pricing-tax--promotions) |
+| BR-PRICE-003 | Promotions may include campaigns, flash sales, seasonal promotions, bundles, volume discounts, and buy-X-get-Y offers. | Mandatory | [FR-PRICE-003](SRS.md#35-pricing-tax--promotions) |
+| BR-PRICE-004 | Promotion eligibility may be defined by customer segment, vendor, category, product, channel, or date. | Mandatory | [FR-PRICE-004](SRS.md#35-pricing-tax--promotions) |
+| BR-PRICE-005 | Shipping discounts, gift cards, and store credit apply only if supported. | Conditional | [FR-PRICE-005](SRS.md#35-pricing-tax--promotions), [DEC-016](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-PRICE-006 | Tax rules are configurable by jurisdiction and product category; display may be tax-inclusive or tax-exclusive. | Mandatory; actual tax rules decision required | [FR-PRICE-006](SRS.md#35-pricing-tax--promotions), [DEC-001](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-PRICE-007 | Price calculation must retain an audit trail and prevent conflicting or invalid discounts. | Mandatory | [FR-PRICE-007](SRS.md#35-pricing-tax--promotions) |
+| BR-PRICE-008 | Final payable amounts are calculated on the server, not trusted from the client. | Mandatory | [FR-CHK-005](SRS.md#36-cart-checkout--order-placement) |
+
+---
+
+## 5. Cart, checkout and order placement rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-CHK-001 | Cart lines can be added, updated, removed, quantity-checked, saved for later, and persisted. | Mandatory | [FR-CHK-001](SRS.md#36-cart-checkout--order-placement) |
+| BR-CHK-002 | Guest and authenticated checkout are supported subject to business policy. | Conditional | [FR-CHK-002](SRS.md#36-cart-checkout--order-placement), [DEC-012](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-CHK-003 | Checkout includes address selection, shipping method selection, delivery estimate, and order summary. | Mandatory | [FR-CHK-003](SRS.md#36-cart-checkout--order-placement) |
+| BR-CHK-004 | Coupon, gift card, or wallet application must provide transparent calculation. | Conditional for gift card/wallet | [FR-CHK-004](SRS.md#36-cart-checkout--order-placement) |
+| BR-CHK-005 | Tax, shipping, discount, and final payable amount are calculated on the server. | Mandatory | [FR-CHK-005](SRS.md#36-cart-checkout--order-placement), [AC-001](ACCEPTANCE-CRITERIA.md) |
+| BR-CHK-006 | Inventory reservation must expire and be released safely when checkout fails or times out. | Mandatory | [FR-CHK-006](SRS.md#36-cart-checkout--order-placement), [BR-INV-005](#6-inventory-procurement-and-warehouse-rules) |
+| BR-CHK-007 | Checkout validation, idempotent order submission, and duplicate-click protection are required. | Mandatory | [FR-CHK-007](SRS.md#36-cart-checkout--order-placement), [API-IDEMP](../architecture/API-DESIGN.md) |
+| BR-CHK-008 | Abandoned-cart events and recovery messaging are allowed only subject to consent. | Conditional | [FR-CHK-008](SRS.md#36-cart-checkout--order-placement), [SEC-PRIV-003](../architecture/SECURITY-ARCHITECTURE.md) |
+
+```mermaid
+flowchart TD
+    A[Cart] --> B[Address and shipping selection]
+    B --> C[Server calculates tax, shipping, discounts, final total]
+    C --> D[Reserve inventory with expiry]
+    D --> E{Order submission}
+    E -- success --> F[Order created with idempotency protection]
+    E -- failure/timeout --> G[Release reservation safely]
+    F --> H[Payment flow]
+```
+
+---
+
+## 6. Inventory, procurement and warehouse rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-INV-001 | Inventory is vendor-level and, where required, central, with SKU/variant-level quantities. | Conditional for central inventory | [FR-INV-001](SRS.md#38-inventory-procurement--warehouse) |
+| BR-INV-002 | Multiple warehouses/locations, stock transfers, and location-based availability depend on the multi-warehouse launch decision. | Conditional | [FR-INV-002](SRS.md#38-inventory-procurement--warehouse), [DEC-016](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-INV-003 | Stock-in, stock-out, adjustments, cycle counts, and reconciliation are inventory operations. | Mandatory | [FR-INV-003](SRS.md#38-inventory-procurement--warehouse) |
+| BR-INV-004 | Low-stock thresholds, out-of-stock alerts, and replenishment reports are required. | Mandatory | [FR-INV-004](SRS.md#38-inventory-procurement--warehouse) |
+| BR-INV-005 | Inventory is reserved during checkout and released on cancellation or expiry. | Mandatory | [FR-INV-005](SRS.md#38-inventory-procurement--warehouse), [AC-005](ACCEPTANCE-CRITERIA.md) |
+| BR-INV-006 | Purchase orders and supplier records apply if procurement is in scope. | Conditional | [FR-INV-006](SRS.md#38-inventory-procurement--warehouse), [DEC-016](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-INV-007 | Batch/lot/serial/expiry tracking applies to applicable product types. | Conditional | [FR-INV-007](SRS.md#38-inventory-procurement--warehouse), [DEC-003](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-INV-008 | Damaged, lost, returned, and quarantined stock must be handled. | Mandatory | [FR-INV-008](SRS.md#38-inventory-procurement--warehouse) |
+| BR-INV-009 | Inventory valuation and stock movement audit trail are required. | Mandatory | [FR-INV-009](SRS.md#38-inventory-procurement--warehouse) |
+| BR-INV-010 | Concurrent checkouts must not oversell stock beyond configured rules. | Mandatory; configured rules to define | [AC-005](ACCEPTANCE-CRITERIA.md), [DEC-021](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+
+---
+
+## 7. Order, fulfilment and shipping rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-ORD-001 | Order creation, confirmation, payment state, and customer notifications are required. | Mandatory | [FR-ORD-001](SRS.md#39-order-management--fulfilment) |
+| BR-ORD-002 | Orders are split by vendor, warehouse, or shipment while retaining a customer-facing parent order. | Mandatory | [FR-ORD-002](SRS.md#39-order-management--fulfilment), [AC-004](ACCEPTANCE-CRITERIA.md) |
+| BR-ORD-003 | Vendor assignment, acceptance/rejection rules, and processing deadlines apply. | Mandatory; exact rules/deadlines to define | [FR-ORD-003](SRS.md#39-order-management--fulfilment), [DEC-021](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-ORD-004 | Pick, pack, dispatch, and partial fulfilment workflows are supported. | Mandatory | [FR-ORD-004](SRS.md#39-order-management--fulfilment) |
+| BR-ORD-005 | Order statuses use controlled transitions and event history. | Mandatory; exact state machine to define | [FR-ORD-005](SRS.md#39-order-management--fulfilment), [DEC-021](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-ORD-006 | Cancellation before/after fulfilment follows policy; partial cancellation only where supported. | Conditional | [FR-ORD-006](SRS.md#39-order-management--fulfilment), [DEC-006](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-ORD-007 | Order editing rules, invoice generation, and internal notes are supported. | Mandatory | [FR-ORD-007](SRS.md#39-order-management--fulfilment) |
+| BR-ORD-008 | Bulk order processing, exception queues, and operational dashboards are supported. | Mandatory | [FR-ORD-008](SRS.md#39-order-management--fulfilment) |
+| BR-ORD-009 | Delivery confirmation and proof-of-delivery reference apply where supported. | Conditional | [FR-ORD-009](SRS.md#39-order-management--fulfilment), [DEC-004](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-SHIP-001 | Shipping zones, serviceability, package dimensions/weight, and rate calculation apply. | Mandatory | [FR-SHIP-001](SRS.md#310-shipping--logistics) |
+| BR-SHIP-002 | Courier aggregator or carrier integrations handle shipment creation/cancellation; model is unresolved. | Mandatory capability; model decision required | [FR-SHIP-002](SRS.md#310-shipping--logistics), [DEC-005](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-SHIP-003 | AWB/tracking number, shipping label, and manifest generation are required. | Mandatory | [FR-SHIP-003](SRS.md#310-shipping--logistics) |
+| BR-SHIP-004 | Pickup scheduling, shipment tracking, and milestone webhooks are required. | Mandatory | [FR-SHIP-004](SRS.md#310-shipping--logistics) |
+| BR-SHIP-005 | Estimated delivery date, delivery notifications, and exception management are required. | Mandatory | [FR-SHIP-005](SRS.md#310-shipping--logistics) |
+| BR-SHIP-006 | Failed delivery, reattempt, return-to-origin, and reverse pickup workflows are supported. | Mandatory | [FR-SHIP-006](SRS.md#310-shipping--logistics) |
+| BR-SHIP-007 | Split orders may create multiple shipments; each shipment has its own status tracking. | Mandatory | [FR-SHIP-007](SRS.md#310-shipping--logistics) |
+
+```mermaid
+flowchart TD
+    A[Parent customer order] --> B[Vendor fulfilment unit]
+    A --> C[Vendor fulfilment unit]
+    B --> D[Shipment]
+    C --> E[Shipment]
+    C --> F[Shipment]
+    D --> G[Delivery confirmation / POD where supported]
+    E --> H[Milestone tracking]
+    F --> I[Milestone tracking]
+```
+
+---
+
+## 8. Finance, settlement and ledger rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-FIN-001 | Monetary values use fixed-precision decimals and explicit currency code; floating-point arithmetic is prohibited for money. | Mandatory | [DB-006](SRS.md#8-data-api-and-integration-summary) |
+| BR-FIN-002 | Financial ledger entries are immutable; errors are corrected with compensating entries rather than overwriting history. | Mandatory | [DB-007](SRS.md#8-data-api-and-integration-summary) |
+| BR-FIN-003 | Payment transactions include authorization/capture, status, retries, failure handling, and verified webhooks. | Mandatory | [FR-PAY-003](SRS.md#37-payments-refunds--finance) |
+| BR-FIN-004 | Full and partial refunds include reasons, status tracking, and reconciliation. | Mandatory | [FR-PAY-004](SRS.md#37-payments-refunds--finance) |
+| BR-FIN-005 | Transaction ledger records customer payments, marketplace fees, vendor payable amounts, refunds, and adjustments. | Mandatory | [FR-PAY-005](SRS.md#37-payments-refunds--finance) |
+| BR-FIN-006 | Commission deductions, settlement cycles, payout approval, and payout reconciliation are required; commission/payout values remain unresolved. | Mandatory; values decision required | [FR-PAY-006](SRS.md#37-payments-refunds--finance), [DEC-006](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-FIN-007 | Tax invoices, credit notes, receipts, downloadable statements, and vendor liability/commission reversal rules are required; calculation details remain unresolved. | Mandatory; values decision required | [FR-PAY-007](SRS.md#37-payments-refunds--finance), [FR-RET-007](SRS.md#311-returns-exchanges--refunds) |
+| BR-FIN-008 | COD remittance and reconciliation apply only if COD is enabled. | Conditional | [FR-PAY-008](SRS.md#37-payments-refunds--finance), [DEC-004](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-FIN-009 | Payment callbacks/webhooks must be verified and idempotent; retries or duplicates must not create duplicate charges, orders, or refunds. | Mandatory | [AC-006](ACCEPTANCE-CRITERIA.md), [API-WH-001](../architecture/API-DESIGN.md) |
+
+---
+
+## 9. Returns, exchanges and refund rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-RET-001 | Return window, product eligibility, and return policy are configurable by category/vendor; actual values are unresolved. | Mandatory configuration; values decision required | [FR-RET-001](SRS.md#311-returns-exchanges--refunds), [DEC-006](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-RET-002 | Return/exchange request includes reason, comments, and evidence uploads. | Mandatory | [FR-RET-002](SRS.md#311-returns-exchanges--refunds) |
+| BR-RET-003 | Return request is approved/rejected; approved returns are picked up and tracked. | Mandatory | [FR-RET-003](SRS.md#311-returns-exchanges--refunds) |
+| BR-RET-004 | Warehouse/vendor inspection dispositions are restock, repair, quarantine, or write-off. | Mandatory | [FR-RET-004](SRS.md#311-returns-exchanges--refunds) |
+| BR-RET-005 | Exchange/replacement order creation reserves inventory. | Mandatory | [FR-RET-005](SRS.md#311-returns-exchanges--refunds), [BR-INV-005](#6-inventory-procurement-and-warehouse-rules) |
+| BR-RET-006 | Full/partial refund initiation includes refund method and status updates. | Mandatory | [FR-RET-006](SRS.md#311-returns-exchanges--refunds) |
+| BR-RET-007 | Vendor liability and commission reversal rules apply; exact reversal policy is unresolved. | Mandatory; policy decision required | [FR-RET-007](SRS.md#311-returns-exchanges--refunds), [DEC-006](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-RET-008 | Return analytics, reason codes, and abuse/fraud review are required. | Mandatory | [FR-RET-008](SRS.md#311-returns-exchanges--refunds) |
+
+```mermaid
+flowchart TD
+    A[Eligible customer return/exchange request] --> B[Approve or reject]
+    B -- rejected --> C[Record decision]
+    B -- approved --> D[Pickup and return tracking]
+    D --> E[Warehouse/vendor inspection]
+    E --> F[Disposition: restock, repair, quarantine, write-off]
+    F --> G{Resolution}
+    G -- refund --> H[Full or partial refund with status]
+    G -- exchange --> I[Replacement order and inventory reservation]
+```
+
+---
+
+## 10. Review, support and moderation rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-REV-001 | Product/vendor ratings and written reviews are supported; image/video attachments are optional. | Conditional for media | [FR-REV-001](SRS.md#314-reviews-ratings--moderation) |
+| BR-REV-002 | Review eligibility and verified-purchase indicator rules apply. | Mandatory; exact eligibility to define | [FR-REV-002](SRS.md#314-reviews-ratings--moderation), [DEC-021](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-REV-003 | Reviews can be reported, moderated, removed, and appealed. | Mandatory | [FR-REV-003](SRS.md#314-reviews-ratings--moderation) |
+| BR-REV-004 | Admin/vendor responses are allowed where permitted. | Conditional | [FR-REV-004](SRS.md#314-reviews-ratings--moderation) |
+| BR-REV-005 | Spam, abusive content, and suspicious review detection apply. | Mandatory | [FR-REV-005](SRS.md#314-reviews-ratings--moderation) |
+| BR-SUP-001 | Support tickets have categories, priorities, assignment, and escalation. | Mandatory | [FR-SUP-001](SRS.md#315-customer-support--disputes) |
+| BR-SUP-002 | Customer/vendor communication history and internal notes are maintained. | Mandatory | [FR-SUP-002](SRS.md#315-customer-support--disputes) |
+| BR-SUP-003 | Live chat or chatbot integration applies if selected. | Conditional | [FR-SUP-003](SRS.md#315-customer-support--disputes), [DEC-017](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-SUP-004 | FAQs, help centre, and policy knowledge base are provided. | Mandatory | [FR-SUP-004](SRS.md#315-customer-support--disputes) |
+| BR-SUP-005 | Disputes are managed for orders, returns, payments, and vendor issues. | Mandatory | [FR-SUP-005](SRS.md#315-customer-support--disputes) |
+| BR-SUP-006 | SLA tracking, resolution codes, CSAT, and support analytics are required; SLA values are unresolved. | Mandatory; values decision required | [FR-SUP-006](SRS.md#315-customer-support--disputes), [DEC-009](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+
+---
+
+## 11. Marketing, content and reporting rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-MKT-001 | Email, SMS, push, and messaging notifications use approved providers. | Mandatory | [FR-MKT-001](SRS.md#313-marketing-loyalty--engagement) |
+| BR-MKT-002 | Campaigns, segments, referrals, and affiliate tracking apply if enabled. | Conditional | [FR-MKT-002](SRS.md#313-marketing-loyalty--engagement) |
+| BR-MKT-003 | Loyalty points, reward rules, redemption, and expiry ledger apply if enabled. | Conditional | [FR-MKT-003](SRS.md#313-marketing-loyalty--engagement) |
+| BR-MKT-004 | Abandoned-cart, back-in-stock, and price-drop alerts require consent controls. | Conditional; consent mandatory where used | [FR-MKT-004](SRS.md#313-marketing-loyalty--engagement) |
+| BR-MKT-005 | Personalized recommendations and merchandising rules are supported; advanced recommendations are listed as expansion. | Conditional | [FR-MKT-005](SRS.md#313-marketing-loyalty--engagement), [PHASE-008](SRS.md#11-development-phases-and-mvp-baseline) |
+| BR-MKT-006 | Promotional banners, pop-ups, and campaign landing pages are supported. | Mandatory | [FR-MKT-006](SRS.md#313-marketing-loyalty--engagement) |
+| BR-MKT-007 | Campaign attribution, conversion, and revenue reporting are required. | Mandatory | [FR-MKT-007](SRS.md#313-marketing-loyalty--engagement) |
+| BR-CMS-001 | Homepage sections, banners, navigation, footer, and landing pages are managed content. | Mandatory | [FR-CMS-001](SRS.md#316-content-management--seo) |
+| BR-CMS-002 | Static pages include About, Contact, Terms, Privacy, Shipping, and Returns. | Mandatory | [FR-CMS-002](SRS.md#316-content-management--seo) |
+| BR-CMS-003 | Blog/editorial content is included if required. | Conditional | [FR-CMS-003](SRS.md#316-content-management--seo), [DEC-017](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-CMS-004 | SEO fields include title, description, canonical URL, Open Graph, and structured product data. | Mandatory | [FR-CMS-004](SRS.md#316-content-management--seo) |
+| BR-CMS-005 | XML sitemap, robots directives, redirects, and broken-link monitoring are required. | Mandatory | [FR-CMS-005](SRS.md#316-content-management--seo) |
+| BR-BI-001 | Reports are exportable, role-protected, and support date/filter controls. | Mandatory | [FR-BI-007](SRS.md#317-reports--business-intelligence), [SEC-AUTHZ-002](../architecture/SECURITY-ARCHITECTURE.md) |
+
+---
+
+## 12. Administration, audit and security rules
+
+| ID | Business rule | Status | Source / cross-reference |
+|---|---|---|---|
+| BR-ADM-001 | Super-admin dashboard includes sales, orders, customers, sellers, inventory, and exception KPIs. | Mandatory | [FR-ADM-001](SRS.md#312-admin-console--platform-configuration) |
+| BR-ADM-002 | Admin/sub-admin creation, RBAC, and fine-grained permissions are required. | Mandatory | [FR-ADM-002](SRS.md#312-admin-console--platform-configuration) |
+| BR-ADM-003 | Admin can manage vendors, customers, products, categories, brands, orders, payments, and returns. | Mandatory | [FR-ADM-003](SRS.md#312-admin-console--platform-configuration) |
+| BR-ADM-004 | Admin configures commissions, fees, taxes, shipping rules, policies, and serviceability. | Mandatory | [FR-ADM-004](SRS.md#312-admin-console--platform-configuration) |
+| BR-ADM-005 | Admin manages coupons, banners, campaigns, homepage sections, and content pages. | Mandatory | [FR-ADM-005](SRS.md#312-admin-console--platform-configuration) |
+| BR-ADM-006 | Admin handles moderation queues, disputes, flagged reviews, and compliance workflows. | Mandatory | [FR-ADM-006](SRS.md#312-admin-console--platform-configuration) |
+| BR-ADM-007 | System configuration, feature flags, audit logs, and operational controls are required. | Mandatory | [FR-ADM-007](SRS.md#312-admin-console--platform-configuration) |
+| BR-SEC-001 | Authentication, authorization, and permission checks are required on every protected operation. | Mandatory | [SEC-AUTHZ-001](../architecture/SECURITY-ARCHITECTURE.md) |
+| BR-SEC-002 | Privileged actions, seller bank-detail changes, refunds, commissions, and payouts are audited. | Mandatory | [SEC-AUDIT-001](../architecture/SECURITY-ARCHITECTURE.md) |
+| BR-SEC-003 | Sensitive data is minimised and protected; card numbers and CVV are never stored. | Mandatory | [SEC-DATA-001](../architecture/SECURITY-ARCHITECTURE.md), [SEC-PAY-001](../architecture/SECURITY-ARCHITECTURE.md) |
+| BR-SEC-004 | Privacy notices, consent records, retention policies, and data-subject request workflows are required. | Mandatory | [SEC-PRIV-*](../architecture/SECURITY-ARCHITECTURE.md) |
+
+## 13. Rule traceability
+
+| SRS domain | Business-rule IDs |
+|---|---|
+| Catalogue | BR-CAT-001–BR-CAT-010 |
+| Vendor | BR-VEN-001–BR-VEN-012 |
+| Customer | BR-CUS-001–BR-CUS-008 |
+| Pricing/tax/promotions | BR-PRICE-001–BR-PRICE-008 |
+| Cart/checkout | BR-CHK-001–BR-CHK-008 |
+| Inventory | BR-INV-001–BR-INV-010 |
+| Orders/shipping | BR-ORD-001–BR-ORD-009, BR-SHIP-001–BR-SHIP-007 |
+| Finance | BR-FIN-001–BR-FIN-009 |
+| Returns | BR-RET-001–BR-RET-008 |
+| Reviews/support | BR-REV-001–BR-REV-005, BR-SUP-001–BR-SUP-006 |
+| Marketing/content/reporting | BR-MKT-001–BR-MKT-007, BR-CMS-001–BR-CMS-005, BR-BI-001 |
+| Admin/security | BR-ADM-001–BR-ADM-007, BR-SEC-001–BR-SEC-004 |
