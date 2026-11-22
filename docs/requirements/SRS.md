@@ -2,8 +2,8 @@
 
 **Project:** Task 2 — E-Commerce Marketplace  
 **Source of truth:** `docs/requirements/Task_2_Complete_Ecommerce_Marketplace_Specification.pdf`  
-**Document status:** Derived documentation for planning and estimation; the PDF remains authoritative.  
-**Version:** 1.0 baseline
+**Document status:** Draft derived SRS for planning and estimation; the PDF remains authoritative. Not approved; pending human approval and resolution of DEC-001–DEC-024.  
+**Version:** 1.0 derived SRS version; requirements remain a draft planning baseline pending DEC-001–DEC-024.
 
 ## Status vocabulary
 
@@ -49,7 +49,7 @@
 | ID | Objective | Status | Cross-reference |
 |---|---|---|---|
 | SRS-OBJ-001 | Deliver a consistent shopping experience across desktop, mobile web, and, where in scope, native mobile apps. | Conditional for native apps | [FR-MOB-001](#319-mobile--multi-channel) |
-| SRS-OBJ-002 | Provide separate, permission-controlled workspaces for customers, vendors, administrators, and fulfilment teams. | Mandatory | [SEC-AUTHZ-001](../architecture/SECURITY-ARCHITECTURE.md), [ROLE-*](#2-user-roles-and-portals) |
+| SRS-OBJ-002 | Provide separate, permission-controlled workspaces for customers, vendors, administrators, and fulfilment teams. | Mandatory | [SEC-AUTHZ-001](../architecture/SECURITY-ARCHITECTURE.md), [SRS-ROLE-*](#2-user-roles-and-portals), [SRS-PORTAL-*](#21-portal-surfaces) |
 | SRS-OBJ-003 | Support multiple sellers, vendor-specific catalogues and inventory, split orders, and commission-based settlements. | Mandatory | [FR-VEN-*](#32-vendor--seller-management), [FR-ORD-002](#39-order-management--fulfilment), [FR-PAY-006](#37-payments-refunds--finance) |
 | SRS-OBJ-004 | Provide secure payment processing, reliable order state management, and traceable refunds and payouts. | Mandatory | [FR-PAY-*](#37-payments-refunds--finance), [SEC-*](../architecture/SECURITY-ARCHITECTURE.md) |
 | SRS-OBJ-005 | Build an extensible platform with documented APIs, integrations, monitoring, backups, and automated tests. | Mandatory | [API-*](../architecture/API-DESIGN.md), [DEP-*](#11-devops-environments-and-deployment), [QA-*](#10-testing-and-quality-assurance) |
@@ -70,11 +70,25 @@
 | SRS-ROLE-008 | Delivery / logistics operator | Receive shipment assignments, update pickup/delivery milestones, record delivery exceptions and proof of delivery. | Mandatory | [US-DELIVERY](USER-STORIES.md#delivery--logistics-operator) |
 | SRS-ROLE-009 | Finance operator | Reconcile transactions, process eligible refunds, review commissions, approve settlements, export financial reports. | Mandatory | [US-FINANCE](USER-STORIES.md#finance-operator) |
 | SRS-ROLE-010 | Super administrator | Manage global configuration, administrator roles, permissions, audit records, security settings. | Mandatory | [US-SUPERADMIN](USER-STORIES.md#super-administrator) |
-| SRS-ROLE-011 | Customer storefront | Primary public/customer client surface. | Mandatory | [ARC-PRES-001](../architecture/SYSTEM-ARCHITECTURE.md) |
-| SRS-ROLE-012 | Vendor portal | Permission-controlled vendor workspace. | Mandatory | [ARC-PRES-002](../architecture/SYSTEM-ARCHITECTURE.md) |
-| SRS-ROLE-013 | Admin console / admin portal | Permission-controlled marketplace operations workspace. | Mandatory | [ARC-PRES-003](../architecture/SYSTEM-ARCHITECTURE.md) |
-| SRS-ROLE-014 | Customer, vendor, delivery mobile apps | Optional apps using React Native. | Conditional | [TEC-015](#6-recommended-technology-stack), [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
-| SRS-ROLE-015 | Support, warehouse, delivery, finance workspaces | Roles are named in §2, but the PDF does not name dedicated portals for them. | Decision required | [DEC-011](#12-unresolved-decisions-and-items-to-confirm) |
+| SRS-ROLE-011 | Customer storefront | Primary public/customer client surface. Retained as a legacy pointer; use `SRS-PORTAL-001`. | Mandatory | [ARC-PRES-001](../architecture/SYSTEM-ARCHITECTURE.md) |
+| SRS-ROLE-012 | Vendor portal | Permission-controlled vendor workspace. Retained as a legacy pointer; use `SRS-PORTAL-002`. | Mandatory | [ARC-PRES-002](../architecture/SYSTEM-ARCHITECTURE.md) |
+| SRS-ROLE-013 | Admin console / admin portal | Permission-controlled marketplace operations workspace. Retained as a legacy pointer; use `SRS-PORTAL-003`. | Mandatory | [ARC-PRES-003](../architecture/SYSTEM-ARCHITECTURE.md) |
+| SRS-ROLE-014 | Customer, vendor, delivery mobile apps | Optional apps using React Native. Retained as a legacy pointer; use `SRS-CHANNEL-001` and `FR-MOB-002`. | Conditional | [TEC-013](#6-recommended-technology-stack), [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
+| SRS-ROLE-015 | Support, warehouse, delivery, finance workspaces | Roles are named in §2, but the PDF does not name dedicated portals for them. Retained as a legacy pointer; the workspace question is tracked only in `DEC-011`. | Decision required | [DEC-011](#12-unresolved-decisions-and-items-to-confirm) |
+
+### 2.1 Portal surfaces
+
+| ID | Portal / surface | Requirement | Status | Cross-reference |
+|---|---|---|---|---|
+| SRS-PORTAL-001 | Customer storefront | Primary public/customer client surface. | Mandatory | [ARC-PRES-001](../architecture/SYSTEM-ARCHITECTURE.md), [FR-DISC-*](#34-storefront-search--product-discovery) |
+| SRS-PORTAL-002 | Vendor portal | Permission-controlled vendor workspace. | Mandatory | [ARC-PRES-002](../architecture/SYSTEM-ARCHITECTURE.md), [FR-VEN-*](#32-vendor--seller-management) |
+| SRS-PORTAL-003 | Admin console / admin portal | Permission-controlled marketplace operations workspace. | Mandatory | [ARC-PRES-003](../architecture/SYSTEM-ARCHITECTURE.md), [FR-ADM-*](#312-admin-console--platform-configuration) |
+
+### 2.2 Optional channels
+
+| ID | Channel | Requirement | Status | Cross-reference |
+|---|---|---|---|---|
+| SRS-CHANNEL-001 | Customer, vendor, delivery mobile apps | Optional apps using React Native. | Conditional | [TEC-013](#6-recommended-technology-stack), [FR-MOB-002](#319-mobile--multi-channel), [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
 
 ---
 
@@ -106,7 +120,7 @@
 | FR-VEN-005 | Vendor dashboard for sales, orders, returns, inventory, ratings, commissions, and payouts. | Mandatory | [FR-BI-002](#317-reports--business-intelligence) |
 | FR-VEN-006 | Vendor-specific product listing, pricing, stock, shipping settings, and fulfilment preferences. | Mandatory | [BR-VEN-006](BUSINESS-RULES.md) |
 | FR-VEN-007 | Admin product moderation and vendor policy compliance. | Mandatory | [BR-CAT-007](BUSINESS-RULES.md) |
-| FR-VEN-008 | Commission plans by vendor, category, product, or campaign; fixed and percentage models. | Mandatory | [BR-FIN-008](BUSINESS-RULES.md) |
+| FR-VEN-008 | Commission plans by vendor, category, product, or campaign; fixed and percentage models. | Mandatory | [BR-VEN-008](BUSINESS-RULES.md), [DEC-006](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-VEN-009 | Vendor subscription plans and feature entitlements if subscriptions are enabled. | Conditional | [DEC-003](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-VEN-010 | Settlement statements, payout requests, payout approvals, payment status, and reconciliation. | Mandatory | [AC-008](ACCEPTANCE-CRITERIA.md) |
 | FR-VEN-011 | Vendor performance scorecards, service-level metrics, cancellation rate, and return rate. | Mandatory | [FR-BI-002](#317-reports--business-intelligence) |
@@ -121,7 +135,7 @@
 | FR-CUS-003 | Multiple saved addresses, default address, and address validation. | Mandatory | [DB-ID](../architecture/DATABASE-ERD.md) |
 | FR-CUS-004 | Customer segmentation, tags, account status, and support history. | Mandatory | [FR-MKT-002](#313-marketing-loyalty--engagement) |
 | FR-CUS-005 | Order history, invoices, returns, refunds, wishlist, saved items, and recently viewed products. | Mandatory | [FR-ORD-001](#39-order-management--fulfilment) |
-| FR-CUS-006 | Customer wallet or store credit only with ledger-based accounting and clear terms. | Conditional | [BR-FIN-006](BUSINESS-RULES.md) |
+| FR-CUS-006 | Customer wallet or store credit only with ledger-based accounting and clear terms. | Conditional | [BR-FIN-002](BUSINESS-RULES.md), [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-CUS-007 | Loyalty points, membership tiers, and reward redemption if enabled. | Conditional | [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-CUS-008 | Account deletion/export request handling in accordance with applicable privacy obligations. | Mandatory | [SEC-PRIV-005](../architecture/SECURITY-ARCHITECTURE.md) |
 
@@ -158,7 +172,7 @@
 | FR-CHK-003 | Address selection, shipping method selection, delivery estimate, and order summary. | Mandatory | [BR-CHK-003](BUSINESS-RULES.md) |
 | FR-CHK-004 | Coupon, gift card, or wallet application with transparent calculation. | Conditional for gift card/wallet | [FR-PRICE-005](#35-pricing-tax--promotions) |
 | FR-CHK-005 | Tax, shipping, discount, and final payable amount calculation on the server. | Mandatory | [BR-CHK-005](BUSINESS-RULES.md), [API-CHK](../architecture/API-DESIGN.md) |
-| FR-CHK-006 | Inventory reservation with expiry and safe release when checkout fails or times out. | Mandatory | [BR-INV-006](BUSINESS-RULES.md), [AC-005](ACCEPTANCE-CRITERIA.md) |
+| FR-CHK-006 | Inventory reservation with expiry and safe release when checkout fails or times out. | Mandatory | [BR-CHK-006](BUSINESS-RULES.md), [BR-INV-005](BUSINESS-RULES.md), [AC-005](ACCEPTANCE-CRITERIA.md) |
 | FR-CHK-007 | Checkout validation, idempotent order submission, and duplicate-click protection. | Mandatory | [API-IDEMP](../architecture/API-DESIGN.md), [AC-001](ACCEPTANCE-CRITERIA.md) |
 | FR-CHK-008 | Abandoned cart events and recovery messaging subject to consent. | Conditional | [FR-MKT-004](#313-marketing-loyalty--engagement) |
 
@@ -202,7 +216,7 @@
 | FR-ORD-006 | Cancellation before/after fulfilment according to policy; partial cancellation where supported. | Conditional for partial cancellation | [BR-ORD-006](BUSINESS-RULES.md) |
 | FR-ORD-007 | Order editing rules, invoice generation, and internal notes. | Mandatory | [BR-ORD-007](BUSINESS-RULES.md) |
 | FR-ORD-008 | Bulk order processing, exception queues, and operational dashboards. | Mandatory | [FR-OPS-001](#320-platform-operations--reliability) |
-| FR-ORD-009 | Delivery confirmation and proof-of-delivery reference where supported. | Conditional | [DEC-004](#12-unresolved-decisions-and-items-to-confirm) |
+| FR-ORD-009 | Delivery confirmation and proof-of-delivery reference where supported. | Conditional | [INT-SHIP](../architecture/SYSTEM-ARCHITECTURE.md), [DEC-005](#12-unresolved-decisions-and-items-to-confirm) |
 
 ### 3.10 Shipping & Logistics
 
@@ -236,7 +250,7 @@
 | FR-ADM-001 | Super-admin dashboard with sales, orders, customers, sellers, inventory, and exception KPIs. | Mandatory | [FR-BI-001](#317-reports--business-intelligence) |
 | FR-ADM-002 | Admin/sub-admin creation, role-based access control, and fine-grained permissions. | Mandatory | [SEC-AUTHZ-002](../architecture/SECURITY-ARCHITECTURE.md) |
 | FR-ADM-003 | Manage vendors, customers, products, categories, brands, orders, payments, and returns. | Mandatory | [API-ADMIN](../architecture/API-DESIGN.md) |
-| FR-ADM-004 | Configure commissions, fees, taxes, shipping rules, policies, and serviceability. | Mandatory | [BR-FIN-008](BUSINESS-RULES.md) |
+| FR-ADM-004 | Configure commissions, fees, taxes, shipping rules, policies, and serviceability. | Mandatory | [BR-VEN-008](BUSINESS-RULES.md), [DEC-006](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-ADM-005 | Manage coupons, banners, campaigns, homepage sections, and content pages. | Mandatory | [FR-CMS-001](#316-content-management--seo) |
 | FR-ADM-006 | Moderation queues, disputes, flagged reviews, and compliance workflows. | Mandatory | [FR-REV-003](#314-reviews-ratings--moderation), [FR-SUP-004](#315-customer-support--disputes) |
 | FR-ADM-007 | System configuration, feature flags, audit logs, and operational controls. | Mandatory | [SEC-AUDIT-001](../architecture/SECURITY-ARCHITECTURE.md), [DEP-008](#11-devops-environments-and-deployment) |
@@ -249,9 +263,10 @@
 | FR-MKT-002 | Campaigns, customer segments, referral codes, and affiliate tracking if enabled. | Conditional | [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-MKT-003 | Loyalty points, reward rules, redemption, and expiry ledger. | Conditional | [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-MKT-004 | Abandoned-cart reminders, back-in-stock alerts, and price-drop alerts with consent controls. | Conditional; consent mandatory where used | [SEC-PRIV-003](../architecture/SECURITY-ARCHITECTURE.md) |
-| FR-MKT-005 | Personalized product recommendations and merchandising rules. | Conditional; advanced recommendations listed for later phase | [PHASE-008](#11-development-phases-and-mvp-baseline) |
+| FR-MKT-005 | Personalized product recommendations and merchandising rules. | Mandatory | [PHASE-008](#11-development-phases-and-mvp-baseline) |
 | FR-MKT-006 | Promotional banners, pop-ups, and campaign landing pages. | Mandatory | [FR-CMS-001](#316-content-management--seo) |
 | FR-MKT-007 | Campaign attribution, conversion, and revenue reporting. | Mandatory | [FR-BI-007](#317-reports--business-intelligence) |
+| FR-MKT-008 | Advanced or AI recommendations can follow in a later phase unless mandatory from day one. | Conditional; decision required | [DEC-016](#12-unresolved-decisions-and-items-to-confirm), [DEC-024](#12-unresolved-decisions-and-items-to-confirm), [PHASE-008](#11-development-phases-and-mvp-baseline) |
 
 ### 3.14 Reviews, Ratings & Moderation
 
@@ -307,7 +322,7 @@
 | FR-COMP-005 | Payment security through compliant gateway/tokenization approach; define PCI DSS responsibilities with provider. | Mandatory | [SEC-PAY-*](../architecture/SECURITY-ARCHITECTURE.md), [DEC-018](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-COMP-006 | Privacy notices, consent records, retention policies, and data-subject request workflows. | Mandatory | [SEC-PRIV-*](../architecture/SECURITY-ARCHITECTURE.md) |
 | FR-COMP-007 | Fraud signals, suspicious login/payment monitoring, and manual review queues. | Mandatory | [SEC-FRAUD-001](../architecture/SECURITY-ARCHITECTURE.md) |
-| FR-COMP-008 | Dependency scanning, vulnerability management, backup testing, and incident response. | Mandatory | [DEP-005](#11-devops-environments-and-deployment) |
+| FR-COMP-008 | Dependency scanning, vulnerability management, backup testing, and incident response. | Mandatory | [DEP-003](#11-devops-environments-and-deployment), [QA-006](#10-testing-and-quality-assurance), [DEP-005](#11-devops-environments-and-deployment), [DEP-008](#11-devops-environments-and-deployment) |
 
 ### 3.19 Mobile & Multi-Channel
 
@@ -325,7 +340,7 @@
 |---|---|---|---|
 | FR-OPS-001 | Environment separation for local development, test/staging, and production. | Mandatory | [DEP-001](#11-devops-environments-and-deployment) |
 | FR-OPS-002 | Structured application logs, metrics, traces, alerting, and error monitoring. | Mandatory | [NFR-OBS-001](#5-non-functional-requirements) |
-| FR-OPS-003 | Automated database backups, point-in-time recovery where supported, and restore drills. | Conditional for PITR | [DEP-006](#11-devops-environments-and-deployment) |
+| FR-OPS-003 | Automated database backups, point-in-time recovery where supported, and restore drills. | Conditional for PITR | [DEP-005](#11-devops-environments-and-deployment) |
 | FR-OPS-004 | CI/CD pipeline, migrations, rollback plan, and release approvals. | Mandatory | [DEP-003](#11-devops-environments-and-deployment), [DEP-004](#11-devops-environments-and-deployment) |
 | FR-OPS-005 | Performance, load, security, and accessibility testing. | Mandatory | [QA-006](#10-testing-and-quality-assurance), [QA-007](#10-testing-and-quality-assurance) |
 | FR-OPS-006 | Disaster recovery objectives (RPO/RTO) agreed before production launch. | Decision required | [NFR-REC-001](#5-non-functional-requirements), [DEC-009](#12-unresolved-decisions-and-items-to-confirm) |
@@ -357,7 +372,7 @@ Section 8 labels these as “requirement / target to agree”; numeric targets a
 | NFR-PERF-001 | Performance | Set measurable page/API latency targets. | Decision required | [PERF-001](../architecture/PERFORMANCE-STRATEGY.md) |
 | NFR-PERF-002 | Performance | Optimize Core Web Vitals, caching, image delivery, and database queries. | Mandatory | [PERF-002](../architecture/PERFORMANCE-STRATEGY.md) |
 | NFR-SCAL-001 | Scalability | Support growth in users, products, vendors, and concurrent orders. | Mandatory | [PERF-005](../architecture/PERFORMANCE-STRATEGY.md) |
-| NFR-SCAL-002 | Scalability | Load test expected peak traffic. | Mandatory | [QA-007](../architecture/PERFORMANCE-STRATEGY.md) |
+| NFR-SCAL-002 | Scalability | Load test expected peak traffic. | Mandatory | [QA-007](#10-testing-and-quality-assurance), [AC-QA-005](ACCEPTANCE-CRITERIA.md#3-qa-acceptance-criteria) |
 | NFR-AVAIL-001 | Availability | Define uptime objective, maintenance windows, failover design, and service dependencies. | Decision required | [PERF-007](../architecture/PERFORMANCE-STRATEGY.md) |
 | NFR-REL-001 | Reliability | Use transactions, retries with backoff, idempotency, queue monitoring, and graceful failure handling. | Mandatory | [API-IDEMP](../architecture/API-DESIGN.md), [ARC-ASYNC](../architecture/SYSTEM-ARCHITECTURE.md) |
 | NFR-SEC-001 | Security | Threat modelling, secure coding, access control, encryption, vulnerability scanning, and incident response. | Mandatory | [SEC-*](../architecture/SECURITY-ARCHITECTURE.md) |
@@ -397,7 +412,7 @@ Section 4 states this is a recommended baseline and says to choose one technolog
 | TEC-018 | Hosting | AWS, Azure, or Google Cloud | Managed application, database, storage, networking. | Recommendation; provider to agree |
 | TEC-019 | Monitoring | Sentry + cloud metrics/logging + OpenTelemetry | Error reporting, logs, traces, dashboards, alerts. | Recommendation |
 | TEC-020 | API testing | Postman or Bruno | Manual and automated API verification. | Recommendation; choice to agree |
-| TEC-021 | Design | Figma | Wireframes, UI kit, design system, prototypes. | Recommendation and mandatory deliverable in §12/15 |
+| TEC-021 | Design | Figma | Wireframes, UI kit, design system, prototypes. | Recommendation and mandatory deliverable in §14/§15 |
 | TEC-022 | Source control | Git + GitHub | Branching, pull requests, code review, release tags. | Recommendation |
 
 ---
@@ -414,6 +429,8 @@ Section 4 states this is a recommended baseline and says to choose one technolog
 | ARC-006 | Data layer: PostgreSQL, Redis, object storage, search index where needed. | Recommendation | [DB-*](../architecture/DATABASE-ERD.md) |
 | ARC-007 | Integration layer: payment, courier, email/SMS, tax, analytics, accounting providers. | Recommendation | [INT-*](../architecture/SYSTEM-ARCHITECTURE.md) |
 | ARC-008 | Async processing: background queues for emails, webhooks, invoice generation, search indexing, exports, scheduled tasks. | Recommendation | [ARC-ASYNC](../architecture/SYSTEM-ARCHITECTURE.md) |
+| ARC-009 | Edge layer: DNS, CDN, WAF, TLS termination, rate limiting. | Recommendation | [SEC-*](#9-security-and-privacy-checklist), [TEC-012](#6-recommended-technology-stack), [API-*](#8-data-api-and-integration-summary) |
+| ARC-010 | Operations layer: CI/CD, monitoring, logging, backups, security scanning. | Recommendation | [DEP-*](#11-devops-environments-and-deployment), [NFR-OBS-001](#5-non-functional-requirements) |
 
 ## 8. Data, API and integration summary
 
@@ -432,6 +449,25 @@ Section 4 states this is a recommended baseline and says to choose one technolog
 | DB-009 | Index common filters/joins; review query plans; avoid unbounded list endpoints. | Mandatory | [PERF-006](../architecture/PERFORMANCE-STRATEGY.md) |
 | DB-010 | Use soft deletion only where appropriate; retain financial and audit records according to policy and law. | Mandatory | [SEC-PRIV-004](../architecture/SECURITY-ARCHITECTURE.md) |
 
+#### 8.1.1 Data entity and example table coverage
+
+PDF §6 enumerates the following domains and example tables. Coverage is required in the data model; the lists are examples, not a decision to implement every optional entity before its scope condition is resolved.
+
+| ID | Domain | Example entities / tables | Status | Cross-reference |
+|---|---|---|---|---|
+| DB-ENT-001 | Identity & access | `users`, `roles`, `permissions`, `user_roles`, `sessions`, `addresses`, `verification_tokens`, `consent_records` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-CUS-*](#33-customer-accounts--crm), [FR-COMP-*](#318-security-privacy--compliance) |
+| DB-ENT-002 | Vendors | `vendors`, `vendor_users`, `vendor_documents`, `vendor_bank_accounts` (protected/tokenized references), `vendor_stores`, `vendor_status_history` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-VEN-*](#32-vendor--seller-management) |
+| DB-ENT-003 | Catalogue | `products`, `product_variants`, `categories`, `brands`, `attributes`, `attribute_values`, `product_media`, `product_categories`, `product_approvals` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-CAT-*](#31-product-catalogue--product-listing) |
+| DB-ENT-004 | Commercial | `price_lists`, `product_prices`, `tax_rules`, `coupons`, `promotions`, `promotion_rules`, `gift_cards` (if enabled) | Mandatory coverage; gift cards conditional | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-PRICE-*](#35-pricing-tax--promotions), [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
+| DB-ENT-005 | Customer activity | `wishlists`, `wishlist_items`, `carts`, `cart_items`, `recently_viewed`, `reviews`, `review_media` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-CUS-*](#33-customer-accounts--crm), [FR-REV-*](#314-reviews-ratings--moderation) |
+| DB-ENT-006 | Inventory | `warehouses`, `inventory_items`, `stock_movements`, `stock_reservations`, `suppliers`, `purchase_orders` (if enabled) | Mandatory coverage; supplier/purchase-order entities conditional | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-INV-*](#38-inventory-procurement--warehouse), [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
+| DB-ENT-007 | Orders | `orders`, `order_items`, `vendor_orders`, `order_status_history`, `invoices`, `shipments`, `shipment_events` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-ORD-*](#39-order-management--fulfilment), [FR-SHIP-*](#310-shipping--logistics) |
+| DB-ENT-008 | Payments & finance | `payment_intents`, `payment_transactions`, `refunds`, `commissions`, `ledger_entries`, `settlements`, `payouts`, `reconciliation_records` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-PAY-*](#37-payments-refunds--finance) |
+| DB-ENT-009 | Returns | `return_requests`, `return_items`, `return_events`, `inspections`, `exchange_orders` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-RET-*](#311-returns-exchanges--refunds) |
+| DB-ENT-010 | Support | `support_tickets`, `ticket_messages`, `ticket_assignments`, `disputes`, `faq_articles` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-SUP-*](#315-customer-support--disputes) |
+| DB-ENT-011 | Marketing | `campaigns`, `notifications`, `notification_templates`, `referral_codes`, `loyalty_accounts`, `loyalty_transactions` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-MKT-*](#313-marketing-loyalty--engagement) |
+| DB-ENT-012 | Governance | `audit_logs`, `admin_actions`, `webhook_events`, `feature_flags`, `system_settings` | Mandatory coverage | [DATABASE-ERD.md](../architecture/DATABASE-ERD.md), [FR-ADM-*](#312-admin-console--platform-configuration), [FR-OPS-*](#320-platform-operations--reliability) |
+
 ### 8.2 API standards
 
 | ID | Requirement | Status | Cross-reference |
@@ -446,16 +482,16 @@ Section 4 states this is a recommended baseline and says to choose one technolog
 
 ### 8.3 External integrations
 
-| ID | Integration | Purpose | Status | Cross-reference |
-|---|---|---|---|---|
-| INT-PAY | Payment gateway | Collect payments, verify status, refunds, marketplace payouts where available. | Mandatory capability; provider decision required | [DEC-004](#12-unresolved-decisions-and-items-to-confirm) |
-| INT-SHIP | Shipping/courier | Rate lookup, serviceability, shipment booking, labels, tracking, reverse pickup. | Mandatory capability; model decision required | [DEC-005](#12-unresolved-decisions-and-items-to-confirm) |
-| INT-EMAIL | Email provider | Transactional emails, verification, invoices, alerts. | Mandatory | [FR-MKT-001](#313-marketing-loyalty--engagement) |
-| INT-SMS | SMS/WhatsApp | OTP and permitted transactional or promotional messages. | Mandatory capability; provider/consent rules apply | [SEC-PRIV-003](../architecture/SECURITY-ARCHITECTURE.md) |
-| INT-TAX | Tax/invoicing | Tax calculation, invoice numbering, tax reports. | Mandatory capability; rules decision required | [DEC-001](#12-unresolved-decisions-and-items-to-confirm) |
-| INT-MAPS | Maps/address | Address autocomplete, geocoding, delivery coverage. | Conditional | [FR-CHK-003](#36-cart-checkout--order-placement) |
-| INT-ANALYTICS | Analytics | Traffic, funnel, product, campaign analysis. | Mandatory capability; consent/taxonomy/retention to define | [NFR-DATA-001](#5-non-functional-requirements) |
-| INT-ERP | Accounting/ERP/CRM | Financial reconciliation, stock sync, customer/business workflows. | Mandatory capability; integrate after core model/ownership established | [PHASE-005](#11-development-phases-and-mvp-baseline) |
+| ID | Integration | Purpose | Selection notes / constraints | Status | Cross-reference |
+|---|---|---|---|---|---|
+| INT-PAY | Payment gateway | Collect payments, verify status, process refunds and support marketplace payouts where available. | Select provider based on operating country, UPI/cards/net banking/COD needs, marketplace split-settlement support, fees and compliance. | Mandatory capability; provider decision required | [DEC-004](#12-unresolved-decisions-and-items-to-confirm) |
+| INT-SHIP | Shipping/courier | Rate lookup, serviceability, shipment booking, labels, tracking, reverse pickup. | Compare direct carrier APIs with a shipping aggregator; validate service coverage and webhook quality. | Mandatory capability; model decision required | [DEC-005](#12-unresolved-decisions-and-items-to-confirm) |
+| INT-EMAIL | Email provider | Transactional emails, verification, invoices and alerts. | Use templates, bounce handling, suppression and delivery logs. | Mandatory | [FR-MKT-001](#313-marketing-loyalty--engagement) |
+| INT-SMS | SMS/WhatsApp | OTP and permitted transactional or promotional messages. | Use approved providers and follow consent/template rules. | Mandatory capability; provider/consent rules apply | [SEC-PRIV-003](../architecture/SECURITY-ARCHITECTURE.md) |
+| INT-TAX | Tax/invoicing | Tax calculation, invoice numbering and tax reports. | Confirm applicable jurisdictional rules with a qualified tax professional. | Mandatory capability; rules decision required | [DEC-001](#12-unresolved-decisions-and-items-to-confirm) |
+| INT-MAPS | Maps/address | Address autocomplete, geocoding and delivery coverage. | Use only where it materially improves checkout or fulfilment. | Conditional | [FR-CHK-003](#36-cart-checkout--order-placement) |
+| INT-ANALYTICS | Analytics | Traffic, funnel, product and campaign analysis. | Define consent, event taxonomy and data retention. | Mandatory capability; consent/taxonomy/retention to define | [NFR-DATA-001](#5-non-functional-requirements) |
+| INT-ERP | Accounting/ERP/CRM | Financial reconciliation, stock sync and customer/business workflows. | Integrate after core marketplace data model and ownership are established. | Mandatory capability; integrate after core model/ownership established | [PHASE-005](#11-development-phases-and-mvp-baseline) |
 
 ---
 
@@ -474,7 +510,7 @@ Section 4 states this is a recommended baseline and says to choose one technolog
 | SEC-009 | Audit privileged actions, seller bank-detail changes, refunds, commissions, payouts. | Mandatory | [SEC-AUDIT-001](../architecture/SECURITY-ARCHITECTURE.md) |
 | SEC-010 | Encrypt backups and sensitive fields; restrict access and test restoration. | Mandatory | [SEC-DATA-002](../architecture/SECURITY-ARCHITECTURE.md) |
 | SEC-011 | Privacy and consumer-law requirements assessed for each target market; for India, review DPDP, consumer protection, GST, payment, and e-commerce rules with qualified specialists. | Mandatory | [DEC-001](#12-unresolved-decisions-and-items-to-confirm) |
-| SEC-012 | Dependency, container, static-analysis, and penetration testing before production. | Mandatory | [QA-006](ACCEPTANCE-CRITERIA.md) |
+| SEC-012 | Dependency, container, static-analysis, and penetration testing before production. | Mandatory | [AC-QA-006](ACCEPTANCE-CRITERIA.md#3-qa-acceptance-criteria), [QA-006](#10-testing-and-quality-assurance) |
 
 ---
 
@@ -534,7 +570,7 @@ Section 14 is explicitly “Suggested Delivery Phases”.
 | MVP-003 | Prioritise cart/checkout, payment, inventory reservation, multi-vendor order splitting. | Recommendation baseline | [AC-001](ACCEPTANCE-CRITERIA.md), [AC-004](ACCEPTANCE-CRITERIA.md), [AC-005](ACCEPTANCE-CRITERIA.md), [AC-006](ACCEPTANCE-CRITERIA.md) |
 | MVP-004 | Prioritise shipping/tracking, cancellation/returns/refunds, commissions/settlements. | Recommendation baseline | [PHASE-004](#11-development-phases-and-mvp-baseline), [PHASE-005](#11-development-phases-and-mvp-baseline) |
 | MVP-005 | Prioritise admin operations, notifications, audit logs, reporting, production monitoring. | Recommendation baseline | [FR-ADM-*](#312-admin-console--platform-configuration), [NFR-OBS-001](#5-non-functional-requirements) |
-| MVP-006 | Advanced loyalty, affiliate marketing, AI recommendations, native mobile apps, B2B procurement, multi-region can follow in planned releases unless mandatory from day one. | Conditional | [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
+| MVP-006 | Advanced loyalty, affiliate marketing, advanced/AI recommendations, native mobile apps, B2B procurement, and multi-region can follow in planned releases unless mandatory from day one. | Conditional | [DEC-016](#12-unresolved-decisions-and-items-to-confirm), [DEC-024](#12-unresolved-decisions-and-items-to-confirm) |
 
 ### 11.3 Launch checklist
 
@@ -577,7 +613,7 @@ These are carried forward unchanged in intent from §16 and other qualified stat
 | DEC-013 | ORM selection: Prisma or TypeORM. | Decision required | Data access implementation. |
 | DEC-014 | Real-time transport: WebSockets or server-sent events “where suitable”. | Decision required | Status-update implementation. |
 | DEC-015 | Search engine threshold: PostgreSQL full-text initially; OpenSearch/Elasticsearch when needed. | Decision required | Search architecture and migration trigger. |
-| DEC-016 | Which optional/conditional features are launch requirements: mobile apps, B2B, multi-warehouse, loyalty, affiliate, advanced recommendations, subscriptions, gift cards, store credit, social sign-in, social commerce, additional channels. | Decision required | Scope and phasing. |
+| DEC-016 | Which optional/conditional features from PDF §16 are launch requirements: mobile apps, B2B, multi-warehouse, loyalty, affiliate, advanced/AI recommendations, subscriptions, gift cards, store credit, social sign-in, social commerce, additional channels. | Decision required | Scope and phasing. |
 | DEC-017 | Whether live chat/chatbot and blog/editorial content are required. | Decision required | Support/content scope. |
 | DEC-018 | PCI DSS responsibility boundary with the selected payment provider. | Decision required | Compliance documentation and control allocation. |
 | DEC-019 | Load balancer, auto-scaling, and concrete failover topology. Not specified in PDF. | Decision required | Availability and scalability design. |
@@ -585,7 +621,7 @@ These are carried forward unchanged in intent from §16 and other qualified stat
 | DEC-021 | Exact state machines and transition rules for orders, payments, refunds, returns, shipments, vendors, products. | Decision required before development | Business-rule finalization. |
 | DEC-022 | Duplicate-listing rules, content guidelines, tax calculation source of truth, commission calculation examples, reconciliation matching rules. | Decision required before development | Business rule finalization. |
 | DEC-023 | Search quality targets for typo tolerance, synonyms, and relevance ranking. | Decision required | Search acceptance criteria. |
-| DEC-024 | Whether native apps, B2B procurement, multi-region, loyalty, affiliate, and AI recommendations are mandatory from day one. | Decision required | MVP baseline confirmation. |
+| DEC-024 | Day-one-mandatory subset of `DEC-016`: whether native apps, B2B procurement, multi-region capability, loyalty, affiliate, and advanced/AI recommendations are mandatory from day one. This does not supersede `DEC-016`; multi-region from PDF §17 remains distinct from multi-warehouse in `DEC-016`, and no answer is assumed. | Decision required; subordinate to DEC-016 | MVP baseline confirmation. |
 
 ---
 
@@ -594,19 +630,56 @@ These are carried forward unchanged in intent from §16 and other qualified stat
 | Source section | Primary IDs in this set |
 |---|---|
 | §1 Executive Summary | SRS-OV-*, SRS-OBJ-* |
-| §2 User Roles & Portals | SRS-ROLE-* |
+| §2 User Roles & Portals | SRS-ROLE-*, SRS-PORTAL-*, SRS-CHANNEL-*, DEC-011 |
 | §3 Complete Functional Scope | FR-* |
 | §4 Recommended Technology Stack | TEC-* |
 | §5 Architecture & Application Design | ARC-* |
-| §6 Database & Data Model Requirements | DB-* |
+| §6 Database & Data Model Requirements | DB-*, DB-ENT-* |
 | §7 API & Integration Requirements | API-*, INT-* |
 | §8 Non-Functional Requirements | NFR-* |
 | §9 Security & Compliance Checklist | SEC-* |
 | §10 Testing & QA | QA-* |
 | §11 DevOps, Environments & Deployment | DEP-* |
-| §12 UI/UX & Design Deliverables | UX-* in [ACCEPTANCE-CRITERIA.md](ACCEPTANCE-CRITERIA.md) |
+| §12 UI/UX & Design Deliverables | UX-* in [SRS §14](#14-uiux-and-design-deliverables) and [ACCEPTANCE-CRITERIA.md](ACCEPTANCE-CRITERIA.md#ux-pres-001--uiux-and-design-deliverables) |
 | §13 Key User Journeys | AC-JOURNEY-*, AC-* |
 | §14 Suggested Delivery Phases | PHASE-* |
-| §15 Project Deliverables | DEL-* in [ACCEPTANCE-CRITERIA.md](ACCEPTANCE-CRITERIA.md) |
+| §15 Project Deliverables | DEL-* in [SRS §15](#15-project-deliverables) and [ACCEPTANCE-CRITERIA.md](ACCEPTANCE-CRITERIA.md#5-project-deliverable-acceptance) |
 | §16 Assumptions, Decisions & Items to Confirm | DEC-* |
 | §17 Recommended Baseline Scope / Appendix A | MVP-*, LAUNCH-* |
+
+---
+
+## 14. UI/UX and design deliverables
+
+PDF §12 requires the following design deliverables. These are scope deliverables, not implementation claims.
+
+| ID | Requirement | Status | Cross-reference |
+|---|---|---|---|
+| UX-DISC-001 | Discovery and user journeys for customer, vendor, admin, support, and fulfilment roles. | Mandatory | [AC-JOURNEY-*](#4-key-user-journeys-and-acceptance-outcomes), [UX-PRES-001](ACCEPTANCE-CRITERIA.md#ux-pres-001--uiux-and-design-deliverables) |
+| UX-IA-001 | Information architecture, sitemap, and navigation model. | Mandatory | [SRS-PORTAL-*](#21-portal-surfaces), [FR-DISC-*](#34-storefront-search--product-discovery) |
+| UX-WIRE-001 | Wireframes for all critical screens and responsive breakpoints; numeric breakpoints remain decision-required. | Mandatory; breakpoints decision required | [UX-PRES-001](ACCEPTANCE-CRITERIA.md#ux-pres-001--uiux-and-design-deliverables), [FR-MOB-001](#319-mobile--multi-channel), [DEC-020](#12-unresolved-decisions-and-items-to-confirm) |
+| UX-DS-001 | Figma design system covering colours, typography, spacing, grids, components, form states, and accessibility rules. | Mandatory | [TEC-021](#6-recommended-technology-stack), [NFR-ACC-001](#5-non-functional-requirements) |
+| UX-HIFI-001 | High-fidelity screens for storefront, product listing/detail, cart, checkout, customer account, vendor portal, and admin console. | Mandatory | [UX-PRES-001](ACCEPTANCE-CRITERIA.md#ux-pres-001--uiux-and-design-deliverables), [SRS-PORTAL-*](#21-portal-surfaces) |
+| UX-STATE-001 | Loading, empty, error, validation, success, and permission-denied states. | Mandatory | [UX-PRES-001](ACCEPTANCE-CRITERIA.md#ux-pres-001--uiux-and-design-deliverables), [FR-DISC-007](#34-storefront-search--product-discovery) |
+| UX-REVIEW-001 | Usability review and sign-off before implementation of major flows. | Mandatory | [UX-PRES-001](ACCEPTANCE-CRITERIA.md#ux-pres-001--uiux-and-design-deliverables), [PHASE-000](#11-development-phases-and-mvp-baseline), [LAUNCH-013](#11-development-phases-and-mvp-baseline) |
+
+---
+
+## 15. Project deliverables
+
+PDF §15 and its page-12 continuation require the following project deliverables. Optional mobile applications remain “as agreed”; no scope decision is implied.
+
+| ID | Deliverable requirement | Status | Cross-reference |
+|---|---|---|---|
+| DEL-SPEC-001 | Business requirements and functional specification. | Mandatory | [SRS-OV-007](#1-project-overview), [DEL-REQ-001](ACCEPTANCE-CRITERIA.md#5-project-deliverable-acceptance) |
+| DEL-ROLES-001 | User roles, permissions matrix, and process flows. | Mandatory | [SRS-ROLE-*](#2-user-roles-and-portals), [SRS-PORTAL-*](#21-portal-surfaces) |
+| DEL-DESIGN-001 | Information architecture, wireframes, Figma UI kit, and final designs. | Mandatory | [UX-*](#14-uiux-and-design-deliverables), [DEL-UX-001](ACCEPTANCE-CRITERIA.md#5-project-deliverable-acceptance) |
+| DEL-ARCH-001 | System architecture diagram and architecture decision records. | Mandatory | [ARC-*](#7-architecture-summary), [DEL-DESIGN-001](ACCEPTANCE-CRITERIA.md#5-project-deliverable-acceptance) |
+| DEL-DATA-001 | Database ERD, schema, and migration scripts. | Mandatory | [DB-*](#81-data-requirements), [DATABASE-ERD.md](../architecture/DATABASE-ERD.md) |
+| DEL-CODE-001 | Backend source code, frontend source code, and API documentation. | Mandatory | [TEC-001](#6-recommended-technology-stack), [TEC-004](#6-recommended-technology-stack), [API-002](#82-api-standards) |
+| DEL-PORTAL-001 | Vendor, customer, and admin portals; optional mobile applications as agreed. | Mandatory; optional mobile applications as agreed | [SRS-PORTAL-*](#21-portal-surfaces), [FR-MOB-002](#319-mobile--multi-channel), [DEC-016](#12-unresolved-decisions-and-items-to-confirm) |
+| DEL-INT-001 | Integration adapters and sandbox configuration for selected providers. | Mandatory | [INT-*](#83-external-integrations), [DEC-004](#12-unresolved-decisions-and-items-to-confirm), [DEC-005](#12-unresolved-decisions-and-items-to-confirm) |
+| DEL-QA-001 | Automated unit, integration, API, and end-to-end test suites. | Mandatory | [QA-001](#10-testing-and-quality-assurance)–[QA-009](#10-testing-and-quality-assurance), [DEL-TEST-001](ACCEPTANCE-CRITERIA.md#5-project-deliverable-acceptance) |
+| DEL-DEPLOY-001 | Deployment scripts, Docker configuration, and CI/CD pipeline. | Mandatory | [DEP-002](#11-devops-environments-and-deployment), [DEP-003](#11-devops-environments-and-deployment), [DEP-004](#11-devops-environments-and-deployment) |
+| DEL-RUNBOOK-001 | Monitoring dashboards, backup/restore, and operational runbooks. | Mandatory | [DEP-008](#11-devops-environments-and-deployment), [NFR-OBS-001](#5-non-functional-requirements), [DEL-OPS-001](ACCEPTANCE-CRITERIA.md#5-project-deliverable-acceptance) |
+| DEL-DOC-001 | Admin/user guides, technical documentation, and handover. | Mandatory | [LAUNCH-013](#11-development-phases-and-mvp-baseline), [DEL-OPS-001](ACCEPTANCE-CRITERIA.md#5-project-deliverable-acceptance) |
