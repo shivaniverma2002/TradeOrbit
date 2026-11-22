@@ -12,8 +12,9 @@
 | **Mandatory** | Explicitly required by the PDF or necessary for a secure in-scope capability. |
 | **Conditional** | Applies when the relevant feature, provider, channel, or jurisdiction is in scope. |
 | **Decision required** | The PDF leaves the control value or boundary unresolved. See [SRS §12](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm). |
+| **Approved by G decision** | A human-approved G1–G8 decision recorded in [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) is the security control basis. |
 
-> This document does not resolve MFA policy, PCI DSS responsibility, target-jurisdiction obligations, SLA/SLO values, or retention periods. Those remain [DEC-001](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm), [DEC-010](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm), [DEC-018](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm), and [DEC-020](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm).
+> G1–G4 resolve the approved auth policy, session model, unverified-session behavior, and auth security/retention values. PCI DSS responsibility, target-jurisdiction obligations, and non-auth SLA/SLO values remain [DEC-001](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm), [DEC-018](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm), and [DEC-020](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm).
 
 ---
 
@@ -38,11 +39,11 @@
 
 | ID | Control | Requirement | Status | Cross-reference |
 |---|---|---|---|---|
-| SEC-AUTH-001 | Customer, vendor, staff, admin, and operator authentication | Registration, login, logout, email/phone verification, password reset, and optional social sign-in. | Mandatory; social sign-in conditional | [FR-CUS-001](../requirements/SRS.md#33-customer-accounts--crm) |
-| SEC-AUTH-002 | Password storage | Store passwords using a modern salted password-hashing algorithm; never store plaintext passwords. | Mandatory | [SEC-002](../requirements/SRS.md#9-security-and-privacy-checklist) |
-| SEC-AUTH-003 | MFA support | Support MFA for privileged users; whether it is mandatory is unresolved. | Decision required | [DEC-010](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) |
-| SEC-AUTH-004 | Session management | Use secure session/token handling, expiry, revocation, and secure cookie/header settings according to the final auth design. | Mandatory | [FR-COMP-001](../requirements/SRS.md#318-security-privacy--compliance) |
-| SEC-AUTH-005 | Step-up authentication | Require re-authentication for sensitive admin/finance actions if confirmed by MFA policy. | Decision required | [DEC-010](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| SEC-AUTH-001 | Customer, vendor, staff, admin, and operator authentication | Registration, login, logout, email/phone verification, password reset, and optional Google sign-in with explicit secure linking. | Mandatory; Google sign-in optional and approved | [FR-CUS-001](../requirements/SRS.md#33-customer-accounts--crm), [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) |
+| SEC-AUTH-002 | Password storage | Store passwords using Argon2id `19 MiB`, `2` iterations, parallelism `1`, subject to benchmarking; never store plaintext passwords. | Mandatory | [SEC-002](../requirements/SRS.md#9-security-and-privacy-checklist), [G4](SRS.md#12a-approved-g1g8-decisions) |
+| SEC-AUTH-003 | MFA support | Enforce approved role policy: mandatory for privileged and Warehouse/Fulfilment roles, optional for Customer, configurable for Delivery/Logistics pending further approval. | Mandatory; Delivery/Logistics configurable pending approval | [DEC-010](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm), [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) |
+| SEC-AUTH-004 | Session management | Use Redis-backed opaque server-side sessions, HttpOnly cookies, CSRF protection, expiry, rotation, and backend revocation. | Mandatory under G2 | [FR-COMP-001](../requirements/SRS.md#318-security-privacy--compliance), [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) |
+| SEC-AUTH-005 | Step-up authentication | Require re-authentication for sensitive admin/finance actions and MFA reset/disable flows. | Mandatory under G1/G2 | [DEC-010](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm), [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) |
 | SEC-AUTH-006 | Account status enforcement | Suspended, rejected, or terminated users/vendors cannot access protected functions. | Mandatory | [FR-VEN-003](../requirements/SRS.md#32-vendor--seller-management) |
 
 ```mermaid
@@ -61,8 +62,9 @@ flowchart TD
 
 **Authentication notes**
 
-- The PDF conflicts on MFA: §3.18 says optional MFA; §9 requires MFA for privileged users. The architecture supports both; enforcement awaits [DEC-010](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm).
-- Social sign-in is optional and must not bypass verification, consent, privacy, or account-linking controls.
+- The PDF conflict on MFA is resolved by G1: Customer MFA is optional, privileged and Warehouse/Fulfilment MFA is mandatory, and Delivery/Logistics is configurable pending further approval.
+- Google sign-in is optional and must not bypass verification, consent, privacy, or explicit account-linking controls; email match alone never links accounts.
+- Unverified authenticated sessions are restricted to email verification and resend-verification under G3.
 - Vendor staff permissions are assigned by the vendor owner and must remain subordinate to vendor owner rights.
 
 ---
@@ -215,7 +217,7 @@ flowchart TD
 
 | Threat category | Marketplace example | Primary controls | Status |
 |---|---|---|---|
-| Spoofing | Stolen customer/vendor/admin credentials; fake webhook caller. | SEC-AUTH-*, SEC-TLS, signed webhooks, optional MFA pending DEC-010. | Mandatory; MFA decision required |
+| Spoofing | Stolen customer/vendor/admin credentials; fake webhook caller. | SEC-AUTH-*, SEC-TLS, signed webhooks, approved role-based MFA under G1. | Mandatory; Delivery/Logistics MFA configurable pending approval |
 | Tampering | Client changes totals; provider event replay; product status manipulation. | Server-calculated totals, idempotency, webhook dedupe, state machines, audit records. | Mandatory |
 | Repudiation | Admin changes commission without evidence; seller denies KYC submission. | SEC-AUDIT-001, immutable ledger, status/event histories. | Mandatory |
 | Information disclosure | Customer PII exposed via API; KYC documents leaked; secrets in logs. | SEC-AUTHZ-*, SEC-DATA-*, SEC-PRIV-*, secrets management, sanitized errors. | Mandatory |
@@ -237,7 +239,7 @@ flowchart TD
 | SEC-AUDIT-003 | Audit records are append-only and protected from ordinary deletion or update. | Mandatory | [DB-RET-003](DATABASE-ERD.md) |
 | SEC-AUDIT-004 | Order, payment, shipment, return, vendor, and product status changes have event histories. | Mandatory | [DB-008](DATABASE-ERD.md) |
 | SEC-AUDIT-005 | Audit and security logs are centrally collected and alertable. | Mandatory | [NFR-OBS-001](../requirements/SRS.md#5-non-functional-requirements) |
-| SEC-AUDIT-006 | Sensitive logs are access-controlled and retained according to policy. | Mandatory; retention pending DEC-020 | [SEC-PRIV-004](#6-privacy-and-personal-data) |
+| SEC-AUDIT-006 | Sensitive logs are access-controlled; auth audit events retain `1 year`, login history `90 days`, and revoked session metadata `90 days` under G4. Other retention remains policy-driven. | Mandatory; non-auth retention pending DEC-020 | [SEC-PRIV-004](#6-privacy-and-personal-data), [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) |
 
 ---
 
@@ -246,7 +248,7 @@ flowchart TD
 | SRS checklist ID | Architecture control IDs | Acceptance |
 |---|---|---|
 | SEC-001 HTTPS/TLS, secure cookies, headers | SEC-TLS-*, SEC-APP-003 | AC-QA-006 |
-| SEC-002 Password hashing and MFA | SEC-AUTH-002, SEC-AUTH-003 | AC-QA-006; MFA policy pending DEC-010 |
+| SEC-002 Password hashing and MFA | SEC-AUTH-002, SEC-AUTH-003 | AC-QA-006, AC-AUTH-001, AC-AUTH-004 |
 | SEC-003 RBAC and server-side authorization | SEC-AUTHZ-001–SEC-AUTHZ-008 | AC-009, AC-QA-006 |
 | SEC-004 Validation, encoding, parameterized queries, upload scanning | SEC-APP-001, SEC-APP-005 | AC-QA-006 |
 | SEC-005 CSRF/XSS/injection/access control/rate limits | SEC-APP-002 | AC-QA-006 |
@@ -294,10 +296,25 @@ flowchart TD
 |---|---|---|
 | DEC-001 | Target countries and applicable legal/compliance requirements. | Privacy notices, consumer law, tax, payment, and e-commerce rules. |
 | DEC-004 | Payment provider, methods, COD, and settlement capability. | PCI scope, token flow, payout controls, refund handling. |
-| DEC-010 | Whether MFA is optional or mandatory for privileged users. | Authentication and step-up enforcement. |
-| DEC-011 | Dedicated operational portals or admin-console subareas. | Permission scoping and audit presentation. |
-| DEC-012 | Guest checkout policy. | Authentication requirements for checkout and order access. |
-| DEC-016 | Which conditional features launch. | Social sign-in, loyalty, wallet/gift card, mobile, B2B, multi-warehouse controls. |
+| DEC-010 | Whether MFA is optional or mandatory for privileged users. | Resolved by G1 except Delivery/Logistics configurable setting, which requires further approval. |
+| DEC-011 | Dedicated operational portals or admin-console subareas. | Partly resolved by G7: separate admin portal approved; operational subareas still decision-required. |
+| DEC-012 | Guest checkout policy. | Resolved by G5: guest checkout allowed with secure identity and verified-order association; eligibility details still required. |
+| DEC-016 | Which conditional features launch. | Partly resolved by G6 for optional Google sign-in; other conditional features remain decision-required. |
 | DEC-018 | PCI DSS responsibility boundary. | Compliance documentation and control allocation. |
-| DEC-020 | Numeric security, availability, retention, and rate-limit targets. | Test thresholds and operational alerts. |
+| DEC-020 | Numeric security, availability, retention, and rate-limit targets. | Auth values resolved by G4; other targets remain decision-required for test thresholds and operational alerts. |
 | DEC-022 | Duplicate-listing, tax source, commission examples, and reconciliation matching rules. | Fraud/abuse detection and finance controls. |
+
+## 15. Approved G1–G8 security addendum
+
+Approved decisions are recorded in [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions); full security test detail is in `docs/audits/AUTHENTICATION-IMPLEMENTATION-PLAN.md`.
+
+| Gate | Security effect |
+|---|---|
+| G1 | Enforce approved role MFA policy centrally; Delivery/Logistics remains configurable and audited. |
+| G2 | Redis-backed opaque sessions, HttpOnly cookies, CSRF tokens, backend revocation, and no browser-token storage. |
+| G3 | Restrict unverified sessions to email verification and resend-verification. |
+| G4 | Apply approved Argon2id, TTL, lockout, MFA, recovery-code, resend, retention, and no-secrets-in-logs values. |
+| G5 | Use secure guest identity and verified eligibility before associating guest orders. |
+| G6 | Use state/PKCE and explicit verified-provider linking; never auto-link by email. |
+| G7 | Separate admin portal shares auth, RBAC, sessions, CSRF, audit, and PostgreSQL controls. |
+| G8 | pnpm workspaces monorepo uses shared strict TypeScript, lint, test, and dependency-audit configuration. |

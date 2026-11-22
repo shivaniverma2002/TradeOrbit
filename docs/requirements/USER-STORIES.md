@@ -12,8 +12,9 @@
 | **Mandatory** | Directly stated in the PDF or required by a scope requirement/checklist. |
 | **Conditional** | Applies only when the PDF’s qualifier applies. |
 | **Decision required** | Portal, policy, provider, or scope choice is unresolved. |
+| **Approved by G decision** | A human-approved G1–G8 decision recorded in [SRS §12A](SRS.md#12a-approved-g1g8-decisions) resolves this item for implementation. |
 
-Stories are written at requirement level. They do not resolve Section 16 decisions in [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm).
+Stories are written at requirement level. Unresolved Section 16 decisions remain in [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm); G1–G8 are recorded in [SRS §12A](SRS.md#12a-approved-g1g8-decisions).
 
 ---
 
@@ -24,8 +25,8 @@ Stories are written at requirement level. They do not resolve Section 16 decisio
 | US-GUEST-001 | As a guest visitor, I want to browse the catalogue and category/brand pages so that I can discover products. | [SRS-ROLE-001](SRS.md#2-user-roles-and-portals), [FR-DISC-001](SRS.md#34-storefront-search--product-discovery) | [AC-DISC-001](ACCEPTANCE-CRITERIA.md) | Mandatory |
 | US-GUEST-002 | As a guest visitor, I want to search, filter, and sort products so that I can find relevant items. | [FR-DISC-002](SRS.md#34-storefront-search--product-discovery), [FR-DISC-003](SRS.md#34-storefront-search--product-discovery), [FR-DISC-004](SRS.md#34-storefront-search--product-discovery) | [AC-DISC-002](ACCEPTANCE-CRITERIA.md) | Mandatory |
 | US-GUEST-003 | As a guest visitor, I want to view product details, availability, and delivery/return information so that I can make an informed choice. | [FR-DISC-007](SRS.md#34-storefront-search--product-discovery), [FR-CAT-004](SRS.md#31-product-catalogue--product-listing) | [AC-DISC-003](ACCEPTANCE-CRITERIA.md) | Mandatory |
-| US-GUEST-004 | As a guest visitor, I want to add items to a cart where permitted so that I can continue shopping or proceed to checkout. | [SRS-ROLE-001](SRS.md#2-user-roles-and-portals), [FR-CHK-001](SRS.md#36-cart-checkout--order-placement) | [AC-CHK-001](ACCEPTANCE-CRITERIA.md) | Conditional |
-| US-GUEST-005 | As a guest visitor, I want to register or check out as a guest where policy allows so that I can complete a purchase. | [FR-CUS-001](SRS.md#33-customer-accounts--crm), [FR-CHK-002](SRS.md#36-cart-checkout--order-placement) | [AC-001](ACCEPTANCE-CRITERIA.md) | Conditional |
+| US-GUEST-004 | As a guest visitor, I want to add items to a cart so that I can continue shopping or proceed to checkout. | [SRS-ROLE-001](SRS.md#2-user-roles-and-portals), [FR-CHK-001](SRS.md#36-cart-checkout--order-placement) | [AC-CHK-001](ACCEPTANCE-CRITERIA.md) | Mandatory |
+| US-GUEST-005 | As a guest visitor, I want to register or check out as a guest so that I can complete a purchase, with eligible orders associated after verified registration. | [FR-CUS-001](SRS.md#33-customer-accounts--crm), [FR-CHK-002](SRS.md#36-cart-checkout--order-placement), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-001](ACCEPTANCE-CRITERIA.md) | Mandatory; eligibility details decision required |
 
 ---
 
@@ -33,7 +34,7 @@ Stories are written at requirement level. They do not resolve Section 16 decisio
 
 | ID | User story | SRS / FR reference | Acceptance reference | Status |
 |---|---|---|---|---|
-| US-CUST-001 | As a customer, I want to register, log in, verify my contact details, reset my password, and use optional social sign-in so that I can access my account. | [FR-CUS-001](SRS.md#33-customer-accounts--crm) | [AC-CUST-001](ACCEPTANCE-CRITERIA.md) | Mandatory; social sign-in conditional |
+| US-CUST-001 | As a customer, I want to register, log in, verify my contact details, reset my password, and use optional Google sign-in with explicit secure linking so that I can access my account. | [FR-CUS-001](SRS.md#33-customer-accounts--crm), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-CUST-001](ACCEPTANCE-CRITERIA.md) | Mandatory; Google sign-in optional and approved |
 | US-CUST-002 | As a customer, I want to manage my profile, preferences, communication consent, and security settings so that my account reflects my choices. | [FR-CUS-002](SRS.md#33-customer-accounts--crm), [FR-COMP-006](SRS.md#318-security-privacy--compliance) | [AC-CUST-002](ACCEPTANCE-CRITERIA.md) | Mandatory |
 | US-CUST-003 | As a customer, I want multiple validated saved addresses and a default address so that checkout is faster. | [FR-CUS-003](SRS.md#33-customer-accounts--crm) | [AC-CUST-003](ACCEPTANCE-CRITERIA.md) | Mandatory |
 | US-CUST-004 | As a customer, I want to see my order history, invoices, returns, refunds, wishlist, saved items, and recently viewed products so that I can manage my purchase activity. | [FR-CUS-005](SRS.md#33-customer-accounts--crm), [FR-ORD-001](SRS.md#39-order-management--fulfilment) | [AC-001](ACCEPTANCE-CRITERIA.md), [AC-CUST-004](ACCEPTANCE-CRITERIA.md) | Mandatory |
@@ -180,5 +181,17 @@ Stories are written at requirement level. They do not resolve Section 16 decisio
 | ID | User story | SRS / FR reference | Acceptance reference | Status |
 |---|---|---|---|---|
 | US-PRIV-001 | As a privacy-conscious user, I want consent records, privacy notices, retention policies, data export/deletion workflows, and restricted sensitive data so that privacy obligations are met. | [FR-COMP-006](SRS.md#318-security-privacy--compliance), [NFR-DATA-001](SRS.md#5-non-functional-requirements), [SEC-PRIV-*](../architecture/SECURITY-ARCHITECTURE.md) | [AC-PRIV-001](ACCEPTANCE-CRITERIA.md) | Mandatory |
-| US-SEC-001 | As a platform user, I want authentication, RBAC, injection/XSS/CSRF protections, rate limits, and secure uploads so that the platform is protected. | [FR-COMP-001](SRS.md#318-security-privacy--compliance), [FR-COMP-002](SRS.md#318-security-privacy--compliance), [FR-COMP-004](SRS.md#318-security-privacy--compliance) | [AC-SEC-001](ACCEPTANCE-CRITERIA.md), [AC-SEC-002](ACCEPTANCE-CRITERIA.md) | Mandatory; MFA decision required |
+| US-SEC-001 | As a platform user, I want authentication, approved role-based MFA, RBAC, injection/XSS/CSRF protections, rate limits, and secure uploads so that the platform is protected. | [FR-COMP-001](SRS.md#318-security-privacy--compliance), [FR-COMP-002](SRS.md#318-security-privacy--compliance), [FR-COMP-004](SRS.md#318-security-privacy--compliance), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-SEC-001](ACCEPTANCE-CRITERIA.md), [AC-SEC-002](ACCEPTANCE-CRITERIA.md) | Mandatory; Delivery/Logistics MFA configurable pending approval |
 | US-SEC-002 | As a risk operator, I want fraud signals and suspicious login/payment monitoring with manual review queues so that abuse can be reviewed. | [FR-COMP-007](SRS.md#318-security-privacy--compliance), [FR-RET-008](SRS.md#311-returns-exchanges--refunds), [FR-REV-005](SRS.md#314-reviews-ratings--moderation) | [AC-SEC-004](ACCEPTANCE-CRITERIA.md) | Mandatory |
+
+## Approved G1–G8 story addendum
+
+| ID | User story | SRS / FR reference | Acceptance reference | Status |
+|---|---|---|---|---|
+| US-GUEST-006 | As a guest, I want my secure guest identity preserved so that eligible orders can be associated after verified registration and never by unverified email alone. | [FR-CHK-002](SRS.md#36-cart-checkout--order-placement), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-001](ACCEPTANCE-CRITERIA.md) | Mandatory; eligibility details decision required |
+| US-CUST-017 | As a customer, I want optional Google sign-in explicitly linked to my verified account so that no email-only auto-link can take over my account. | [FR-CUS-001](SRS.md#33-customer-accounts--crm), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-CUST-001](ACCEPTANCE-CRITERIA.md) | Optional and approved |
+| US-ADMIN-008 | As an administrator, I want a separate admin portal using centralized backend auth and shared PostgreSQL so that privileged actions follow the same controls as other surfaces. | [SRS-PORTAL-003](SRS.md#21-portal-surfaces), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-009](ACCEPTANCE-CRITERIA.md) | Mandatory |
+| US-SEC-003 | As a privileged user, I want MFA enforced according to my approved role policy so that sensitive access is protected. | [FR-COMP-001](SRS.md#318-security-privacy--compliance), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-SEC-001](ACCEPTANCE-CRITERIA.md) | Mandatory; Delivery/Logistics configurable pending approval |
+| US-SEC-004 | As an unverified user, I want only email verification and resend-verification available until my email is verified so that unverified sessions cannot access protected features. | [FR-CUS-001](SRS.md#33-customer-accounts--crm), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) | [AC-CUST-001](ACCEPTANCE-CRITERIA.md) | Mandatory |
+| US-CUST-018 | As a customer, I want mandatory transactional notifications for account, order, shipment, payment, and security events so that I receive essential information through approved channels. | [FR-MKT-001](SRS.md#313-marketing-loyalty--engagement), [INT-EMAIL](../architecture/SYSTEM-ARCHITECTURE.md) | [AC-MKT-001](ACCEPTANCE-CRITERIA.md) | Mandatory |
+| US-ADMIN-009 | As an administrator, I want notification templates, bounce handling, suppression lists, delivery logs, and consent controls so that mandatory messaging is reliable and compliant. | [FR-MKT-001](SRS.md#313-marketing-loyalty--engagement), [SEC-PRIV-003](../architecture/SECURITY-ARCHITECTURE.md) | [AC-MKT-001](ACCEPTANCE-CRITERIA.md), [AC-MKT-002](ACCEPTANCE-CRITERIA.md) | Mandatory |

@@ -882,8 +882,10 @@ erDiagram
 |---|---|---|---|
 | DB-RET-001 | User-facing catalogue/content records | Soft delete/deactivate where appropriate; preserve public URL/redirect behaviour where SEO is relevant. | Mandatory |
 | DB-RET-002 | Orders, invoices, payments, refunds, ledger, settlements, payouts, tax records | Retain according to policy and law; never hard-delete for convenience. | Mandatory; retention periods decision required |
-| DB-RET-003 | Audit and security records | Retain according to security/compliance policy; protect from modification. | Mandatory; retention periods decision required |
+| DB-RET-003 | Audit and security records | Retain auth audit events for `1 year` under G4; retain other security records according to policy and protect from modification. | Mandatory; non-auth retention periods decision required |
 | DB-RET-004 | Consent records | Retain evidence of consent and withdrawal timestamps according to privacy obligations. | Mandatory |
+| DB-RET-008 | Login history records | Retain login history for `90 days` under G4; never store passwords, OTPs, or raw tokens. | Mandatory |
+| DB-RET-009 | Revoked session metadata | Retain revoked session metadata for `90 days` under G4; active session state remains authoritative in Redis. | Mandatory |
 | DB-RET-005 | Data-subject export/deletion requests | Track request, decision, execution evidence, and actor. | Mandatory |
 | DB-RET-006 | Sensitive vendor documents and bank references | Restrict access, track expiry, tokenize/protect, and remove or archive according to policy. | Mandatory |
 | DB-RET-007 | Carts, recently viewed, temporary reservations, webhook payloads | Short-lived lifecycle with cleanup after purpose is satisfied, except where reconciliation evidence is required. | Mandatory intent; exact periods decision required |
@@ -899,9 +901,24 @@ erDiagram
 | DEC-005 | Shipping model. | Shipment/carrier references, webhook milestones, and rate objects. |
 | DEC-006 | Commission, settlement, reserve/holdback, dispute policy. | Commission calculation, ledger, settlement, payout, and credit-note rules. |
 | DEC-011 | Dedicated operational portals or admin subareas. | Role/permission scoping and staff-user relationships. |
-| DEC-012 | Guest checkout policy. | `CART.userId`, `ORDER.userId`, and customer profile linkage rules. |
+| DEC-012 | Guest checkout policy. | Resolved by G5: guest checkout allowed; eligible guest orders associate after verified registration; exact eligibility rules remain to be documented. |
 | DEC-016 | Conditional feature launch scope. | Warehouse, procurement, loyalty, gifting, wallet, subscription, B2B, and multi-warehouse entities. |
 | DEC-018 | PCI DSS responsibility boundary. | Which payment data/reference fields are permissible. |
-| DEC-020 | Retention and recovery numeric targets. | Retention policy fields and archival strategy. |
+| DEC-020 | Retention and recovery numeric targets. | Auth retention values resolved by G4; other retention/recovery targets remain decision-required. |
 | DEC-021 | Exact state machines. | Status value domains and event transition rules. |
 | DEC-022 | Duplicate-listing and reconciliation rules. | Duplicate detection fields and ledger matching evidence. |
+
+## 11. Approved G1–G8 data-model addendum
+
+The auth baseline is detailed in `docs/audits/AUTHENTICATION-IMPLEMENTATION-PLAN.md`. Existing ERD IDs remain unchanged.
+
+| Gate | Data-model effect |
+|---|---|
+| G1 | Persist role-level MFA policy and encrypted TOTP/recovery-code data; Delivery/Logistics policy is configurable and audited. |
+| G2 | Add opaque session, device, CSRF, and Redis-backed active-session metadata with PostgreSQL history/revocation records. |
+| G3 | Store email verification state so backend guards can enforce the restricted-session allowlist. |
+| G4 | Apply approved TTLs, lockout counters, resend limits, recovery-code count `10`, and retention periods for login history `90 days`, audit events `1 year`, and revoked session metadata `90 days`. |
+| G5 | Add secure `GuestIdentity` and verified guest-order association records; never use unverified email as a merge key. |
+| G6 | Add `ExternalIdentityLink` keyed by provider and verified provider subject with explicit linking metadata. |
+| G7 | The separate admin portal shares the same PostgreSQL user, role, permission, session, and audit tables. |
+| G8 | Prisma migrations and pnpm workspace layout implement the baseline; no destructive production migration. |

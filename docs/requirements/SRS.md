@@ -2,8 +2,8 @@
 
 **Project:** Task 2 — E-Commerce Marketplace  
 **Source of truth:** `docs/requirements/Task_2_Complete_Ecommerce_Marketplace_Specification.pdf`  
-**Document status:** Draft derived SRS for planning and estimation; the PDF remains authoritative. Not approved; pending human approval and resolution of DEC-001–DEC-024.  
-**Version:** 1.0 derived SRS version; requirements remain a draft planning baseline pending DEC-001–DEC-024.
+**Document status:** Derived SRS for planning and estimation; the PDF remains authoritative. G1–G8 are approved and recorded in §12A; remaining DEC-001–DEC-024 items stay decision-required unless explicitly resolved there.<br>
+**Version:** 1.1 derived SRS version; G1–G8 decisions are recorded while unresolved decisions remain visible.
 
 ## Status vocabulary
 
@@ -13,6 +13,7 @@
 | **Conditional** | The PDF qualifies the item with wording such as “where applicable”, “if enabled”, “if supported”, “optional”, “where supported”, or “subject to policy”. |
 | **Recommendation** | The PDF labels the item as recommended or suggested. It is not presented as a confirmed final decision. |
 | **Decision required** | The PDF identifies the item as unresolved, to agree, or dependent on a future selection. |
+| **Approved by G decision** | A human-approved G1–G8 decision recorded in §12A resolves this item for implementation. |
 
 ## Document map
 
@@ -168,7 +169,7 @@
 | ID | Requirement | Status | Cross-reference |
 |---|---|---|---|
 | FR-CHK-001 | Add/update/remove cart lines, quantity checks, save-for-later, and cart persistence. | Mandatory | [BR-CHK-001](BUSINESS-RULES.md) |
-| FR-CHK-002 | Guest and authenticated checkout, subject to business policy. | Conditional | [DEC-012](#12-unresolved-decisions-and-items-to-confirm) |
+| FR-CHK-002 | Guest and authenticated checkout; guest checkout is approved, with secure guest identity and verified registration for eligible-order association. | Mandatory | [DEC-012](#12-unresolved-decisions-and-items-to-confirm), [§12A](#12a-approved-g1g8-decisions) |
 | FR-CHK-003 | Address selection, shipping method selection, delivery estimate, and order summary. | Mandatory | [BR-CHK-003](BUSINESS-RULES.md) |
 | FR-CHK-004 | Coupon, gift card, or wallet application with transparent calculation. | Conditional for gift card/wallet | [FR-PRICE-005](#35-pricing-tax--promotions) |
 | FR-CHK-005 | Tax, shipping, discount, and final payable amount calculation on the server. | Mandatory | [BR-CHK-005](BUSINESS-RULES.md), [API-CHK](../architecture/API-DESIGN.md) |
@@ -315,10 +316,10 @@
 
 | ID | Requirement | Status | Cross-reference |
 |---|---|---|---|
-| FR-COMP-001 | Secure authentication, password hashing, optional MFA, and session management. | Conditional for MFA; mandatory authentication/session | [SEC-AUTH-*](../architecture/SECURITY-ARCHITECTURE.md) |
+| FR-COMP-001 | Secure authentication, password hashing, approved role-based MFA policy, Redis-backed server-side sessions, and session management. | Mandatory | [SEC-AUTH-*](../architecture/SECURITY-ARCHITECTURE.md), [§12A](#12a-approved-g1g8-decisions) |
 | FR-COMP-002 | RBAC, least-privilege access, admin step-up authentication, and audit logs. | Mandatory | [SEC-AUTHZ-*](../architecture/SECURITY-ARCHITECTURE.md) |
 | FR-COMP-003 | TLS in transit, encryption at rest, secrets management, and secure file uploads. | Mandatory | [SEC-DATA-*](../architecture/SECURITY-ARCHITECTURE.md) |
-| FR-COMP-004 | Input validation, output encoding, CSRF protection where applicable, XSS/SQL injection controls, and rate limiting. | Mandatory; CSRF conditional | [SEC-APP-001](../architecture/SECURITY-ARCHITECTURE.md) |
+| FR-COMP-004 | Input validation, output encoding, CSRF protection for cookie-authenticated state changes, XSS/SQL injection controls, and rate limiting. | Mandatory | [SEC-APP-001](../architecture/SECURITY-ARCHITECTURE.md), [§12A](#12a-approved-g1g8-decisions) |
 | FR-COMP-005 | Payment security through compliant gateway/tokenization approach; define PCI DSS responsibilities with provider. | Mandatory | [SEC-PAY-*](../architecture/SECURITY-ARCHITECTURE.md), [DEC-018](#12-unresolved-decisions-and-items-to-confirm) |
 | FR-COMP-006 | Privacy notices, consent records, retention policies, and data-subject request workflows. | Mandatory | [SEC-PRIV-*](../architecture/SECURITY-ARCHITECTURE.md) |
 | FR-COMP-007 | Fraud signals, suspicious login/payment monitoring, and manual review queues. | Mandatory | [SEC-FRAUD-001](../architecture/SECURITY-ARCHITECTURE.md) |
@@ -394,13 +395,13 @@ Section 4 states this is a recommended baseline and says to choose one technolog
 |---|---|---|---|---|
 | TEC-001 | Web storefront | Next.js + React + TypeScript | SEO-friendly storefront, server rendering, routing, reusable UI. | Recommendation |
 | TEC-002 | Styling/components | Tailwind CSS + accessible component library | Responsive design system and consistent components. | Recommendation |
-| TEC-003 | Vendor/admin portals | Next.js + React + TypeScript | Separate role-aware applications or clearly separated portal areas. | Recommendation; structure decision required |
+| TEC-003 | Vendor/admin portals | Next.js + React + TypeScript | Separate role-aware applications; admin portal is a separate frontend under G7. | Recommendation; separate admin portal approved |
 | TEC-004 | Backend | Node.js + NestJS + TypeScript | Modular business services, validation, dependency injection, API layer. | Recommendation |
 | TEC-005 | API style | REST + OpenAPI/Swagger | Stable integration contract; version APIs and document errors. | Recommendation |
 | TEC-006 | Real-time | WebSockets / server-sent events where suitable | Order, support, operational status updates. | Recommendation; choice to agree |
-| TEC-007 | Primary database | PostgreSQL | Transactional relational data and referential integrity. | Recommendation; §6 makes it system of record |
-| TEC-008 | ORM/migrations | Prisma (or TypeORM) | Typed data access and versioned schema migrations. | Recommendation; choice to agree |
-| TEC-009 | Cache/queue | Redis + BullMQ | Caching, rate limiting, sessions where appropriate, background jobs. | Recommendation |
+| TEC-007 | Primary database | PostgreSQL | Transactional relational data and referential integrity; shared by all portals under G7. | Recommendation; §6 makes it system of record |
+| TEC-008 | ORM/migrations | Prisma | Typed data access and versioned schema migrations. | Approved in `AGENTS.md` |
+| TEC-009 | Cache/queue | Redis + BullMQ | Caching, rate limiting, approved server-side sessions, background jobs. | Recommendation; session model approved under G2 |
 | TEC-010 | Search | PostgreSQL full-text initially; OpenSearch/Elasticsearch when needed | Product search, facets, relevance at larger catalogue scale. | Recommendation; threshold to agree |
 | TEC-011 | File/object storage | AWS S3 or compatible object storage | Product media, seller documents, generated files; signed URLs. | Recommendation |
 | TEC-012 | CDN/edge | Cloudflare or cloud-provider CDN | Static/media delivery, DNS, edge protections. | Recommendation; provider to agree |
@@ -419,16 +420,18 @@ Section 4 states this is a recommended baseline and says to choose one technolog
 
 ## 7. Architecture summary
 
+The `ARC-001`–`ARC-008` IDs are canonically defined in [SYSTEM-ARCHITECTURE.md](../architecture/SYSTEM-ARCHITECTURE.md#1-architecture-intent). Rows marked `—` are SRS architecture summaries only; trace them through their cross-reference, not as alternative `ARC-*` definitions.
+
 | ID | Requirement | Status | Cross-reference |
 |---|---|---|---|
 | ARC-001 | Begin with a modular monolith: one deployable backend organised into strict domain modules with explicit interfaces, independent tests, and clear data ownership. | Recommendation | [ARC-001](../architecture/SYSTEM-ARCHITECTURE.md) |
 | ARC-002 | Avoid premature microservice complexity while preserving extraction of high-load or independently operated modules later. | Recommendation | [PHASE-008](#11-development-phases-and-mvp-baseline) |
-| ARC-003 | Presentation layer: customer storefront, vendor portal, admin console, optional mobile apps. | Recommendation | [ARC-PRES](../architecture/SYSTEM-ARCHITECTURE.md) |
-| ARC-004 | API/application layer: authentication, authorization, request validation, orchestration, versioned APIs. | Recommendation | [API-001](../architecture/API-DESIGN.md) |
-| ARC-005 | Domain modules: catalogue, vendor, customer, pricing, cart, checkout, payment, inventory, order, fulfilment, shipping, returns, finance, support, marketing, reporting. | Recommendation | [ARC-DOMAIN](../architecture/SYSTEM-ARCHITECTURE.md) |
-| ARC-006 | Data layer: PostgreSQL, Redis, object storage, search index where needed. | Recommendation | [DB-*](../architecture/DATABASE-ERD.md) |
-| ARC-007 | Integration layer: payment, courier, email/SMS, tax, analytics, accounting providers. | Recommendation | [INT-*](../architecture/SYSTEM-ARCHITECTURE.md) |
-| ARC-008 | Async processing: background queues for emails, webhooks, invoice generation, search indexing, exports, scheduled tasks. | Recommendation | [ARC-ASYNC](../architecture/SYSTEM-ARCHITECTURE.md) |
+| — | Presentation layer: customer storefront, vendor portal, admin console, optional mobile apps. | Recommendation | [ARC-PRES](../architecture/SYSTEM-ARCHITECTURE.md) |
+| — | API/application layer: authentication, authorization, request validation, orchestration, versioned APIs. | Recommendation | [API-001](../architecture/API-DESIGN.md) |
+| — | Domain modules: catalogue, vendor, customer, pricing, cart, checkout, payment, inventory, order, fulfilment, shipping, returns, finance, support, marketing, reporting. | Recommendation | [ARC-DOMAIN](../architecture/SYSTEM-ARCHITECTURE.md) |
+| — | Data layer: PostgreSQL, Redis, object storage, search index where needed. | Recommendation | [DB-*](../architecture/DATABASE-ERD.md) |
+| — | Integration layer: payment, courier, email/SMS, tax, analytics, accounting providers. | Recommendation | [INT-*](../architecture/SYSTEM-ARCHITECTURE.md) |
+| — | Async processing: background queues for emails, webhooks, invoice generation, search indexing, exports, scheduled tasks. | Recommendation | [ARC-ASYNC](../architecture/SYSTEM-ARCHITECTURE.md) |
 | ARC-009 | Edge layer: DNS, CDN, WAF, TLS termination, rate limiting. | Recommendation | [SEC-*](#9-security-and-privacy-checklist), [TEC-012](#6-recommended-technology-stack), [API-*](#8-data-api-and-integration-summary) |
 | ARC-010 | Operations layer: CI/CD, monitoring, logging, backups, security scanning. | Recommendation | [DEP-*](#11-devops-environments-and-deployment), [NFR-OBS-001](#5-non-functional-requirements) |
 
@@ -500,7 +503,7 @@ PDF §6 enumerates the following domains and example tables. Coverage is require
 | ID | Requirement | Status | Cross-reference |
 |---|---|---|---|
 | SEC-001 | HTTPS/TLS everywhere; secure cookies; appropriate security headers. | Mandatory | [SEC-TLS](../architecture/SECURITY-ARCHITECTURE.md) |
-| SEC-002 | Passwords hashed using a modern password-hashing algorithm; MFA for privileged users. | Mandatory; MFA inconsistency noted | [DEC-010](#12-unresolved-decisions-and-items-to-confirm) |
+| SEC-002 | Passwords hashed using a modern password-hashing algorithm; MFA is optional for Customer, mandatory for Vendor Owner, Vendor Staff, Admin, Super Admin, Support, Finance, and Warehouse/Fulfilment, and configurable for Delivery/Logistics pending approval. | Mandatory | [SEC-AUTH-001](../architecture/SECURITY-ARCHITECTURE.md), [SRS §12A](#12a-approved-g1g8-decisions) |
 | SEC-003 | RBAC with least privilege and server-side authorization checks. | Mandatory | [SEC-AUTHZ-001](../architecture/SECURITY-ARCHITECTURE.md) |
 | SEC-004 | Input validation, output encoding, parameterized queries, secure file-upload scanning. | Mandatory | [SEC-APP-001](../architecture/SECURITY-ARCHITECTURE.md) |
 | SEC-005 | CSRF, XSS, SQL injection, SSRF, broken access control, and rate-limit protections. | Mandatory; CSRF “where applicable” in §3.18 | [SEC-APP-002](../architecture/SECURITY-ARCHITECTURE.md) |
@@ -607,21 +610,36 @@ These are carried forward unchanged in intent from §16 and other qualified stat
 | DEC-007 | Initial languages, currencies, tax regions, localization needs. | Decision required | Formatting, tax display, catalog, UX. |
 | DEC-008 | Expected vendors, SKUs, monthly orders, peak concurrent users, growth forecast. | Decision required | Capacity planning, load tests, scaling. |
 | DEC-009 | Hosting preference, budget, team size, timeline, support model, SLOs. | Decision required | Infrastructure, delivery plan, support model, RPO/RTO. |
-| DEC-010 | Whether MFA is optional or mandatory for privileged users: §3.18 says optional MFA; §9 requires MFA for privileged users. | Decision required | Authentication design and admin controls. |
-| DEC-011 | Whether support, warehouse, delivery, and finance roles use dedicated portals or admin-console subareas. | Decision required | Portal decomposition and navigation. |
-| DEC-012 | Guest checkout policy: §2 and §3.6 allow it only where permitted/subject to business policy. | Decision required | Checkout flows and authorization. |
+| DEC-010 | Whether MFA is optional or mandatory for privileged users: §3.18 says optional MFA; §9 requires MFA for privileged users. | Resolved by G1; Delivery/Logistics configurable pending further approval | Authentication design and admin controls. |
+| DEC-011 | Whether support, warehouse, delivery, and finance roles use dedicated portals or admin-console subareas. | Partly resolved by G7: separate admin portal approved; dedicated operations workspaces remain decision-required | Portal decomposition and navigation. |
+| DEC-012 | Guest checkout policy: §2 and §3.6 allow it only where permitted/subject to business policy. | Resolved by G5; eligible guest-order association rules remain to be documented | Checkout flows and authorization. |
 | DEC-013 | ORM selection: Prisma or TypeORM. | Decision required | Data access implementation. |
 | DEC-014 | Real-time transport: WebSockets or server-sent events “where suitable”. | Decision required | Status-update implementation. |
 | DEC-015 | Search engine threshold: PostgreSQL full-text initially; OpenSearch/Elasticsearch when needed. | Decision required | Search architecture and migration trigger. |
-| DEC-016 | Which optional/conditional features from PDF §16 are launch requirements: mobile apps, B2B, multi-warehouse, loyalty, affiliate, advanced/AI recommendations, subscriptions, gift cards, store credit, social sign-in, social commerce, additional channels. | Decision required | Scope and phasing. |
+| DEC-016 | Which optional/conditional features from PDF §16 are launch requirements: mobile apps, B2B, multi-warehouse, loyalty, affiliate, advanced/AI recommendations, subscriptions, gift cards, store credit, social sign-in, social commerce, additional channels. | Partly resolved by G6 for optional Google sign-in; remaining items decision required | Scope and phasing. |
 | DEC-017 | Whether live chat/chatbot and blog/editorial content are required. | Decision required | Support/content scope. |
 | DEC-018 | PCI DSS responsibility boundary with the selected payment provider. | Decision required | Compliance documentation and control allocation. |
 | DEC-019 | Load balancer, auto-scaling, and concrete failover topology. Not specified in PDF. | Decision required | Availability and scalability design. |
-| DEC-020 | Numeric performance, availability, RPO/RTO, retention, and breakpoint targets. Not specified in PDF. | Decision required | NFR acceptance thresholds. |
+| DEC-020 | Numeric performance, availability, RPO/RTO, retention, and breakpoint targets. Not specified in PDF. | Auth security/retention values resolved by G4; other NFR targets decision required | NFR acceptance thresholds. |
 | DEC-021 | Exact state machines and transition rules for orders, payments, refunds, returns, shipments, vendors, products. | Decision required before development | Business-rule finalization. |
 | DEC-022 | Duplicate-listing rules, content guidelines, tax calculation source of truth, commission calculation examples, reconciliation matching rules. | Decision required before development | Business rule finalization. |
 | DEC-023 | Search quality targets for typo tolerance, synonyms, and relevance ranking. | Decision required | Search acceptance criteria. |
 | DEC-024 | Day-one-mandatory subset of `DEC-016`: whether native apps, B2B procurement, multi-region capability, loyalty, affiliate, and advanced/AI recommendations are mandatory from day one. This does not supersede `DEC-016`; multi-region from PDF §17 remains distinct from multi-warehouse in `DEC-016`, and no answer is assumed. | Decision required; subordinate to DEC-016 | MVP baseline confirmation. |
+
+## 12A. Approved G1–G8 decisions
+
+These decisions were human-approved on 2026-11-22. They resolve only the items shown and do not decide any other unresolved `DEC-*` item.
+
+| Gate | Approved decision | Canonical effect |
+|---|---|---|
+| G1 | MFA mandatory for Vendor Owner, Vendor Staff, Admin, Super Admin, Support, Finance, and Warehouse/Fulfilment; optional for Customer; configurable for Delivery/Logistics pending further approval | Resolves `DEC-010` except the Delivery/Logistics configuration detail |
+| G2 | NestJS authentication with Redis-backed server-side sessions, secure HttpOnly cookies, and CSRF protection | Confirms the session model for `FR-COMP-001`, `FR-COMP-004`, and `TEC-009` |
+| G3 | Unverified authenticated sessions can only access email verification and resend-verification | Adds a restricted-session rule to authentication and checkout flows |
+| G4 | Approved Argon2id, TTL, lockout, MFA, recovery-code, resend, retention, and never-log secrets values listed in `docs/audits/AUTHENTICATION-IMPLEMENTATION-PLAN.md` | Resolves auth security/retention values within `DEC-020`; all other NFR targets remain unresolved |
+| G5 | Guest checkout allowed with secure guest identity; eligible guest orders associate after verified registration; no unverified-email merge | Resolves `DEC-012`; eligibility details remain to be documented |
+| G6 | Optional Google sign-in for customers with explicit secure linking; no email-only auto-link; roles and MFA unchanged | Resolves the social sign-in part of `DEC-016` |
+| G7 | Separate admin portal with centralized auth backend and shared PostgreSQL database | Partly resolves `DEC-011`; operations workspaces remain unresolved |
+| G8 | pnpm workspaces monorepo | Confirms repository layout and `pnpm-lock.yaml`; does not resolve unrelated `DEC-*` items |
 
 ---
 

@@ -368,3 +368,7 @@ After these corrections are applied to `SRS.md`, re-run the ID/link verification
 6. Role, portal, and channel IDs are conflated.
 
 No business decision should be resolved as part of these corrections. `SRS.md` must remain unchanged until the user approves the correction plan.
+
+## 12. Current status addendum
+
+This report is a historical audit snapshot. Later corrections and approved decisions are recorded in `COMPLETE-PROJECT-AUDIT.md`, [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions), and the current canonical documents. Do not use the findings above as the current status.

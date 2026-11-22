@@ -65,8 +65,8 @@ flowchart LR
 
 **Context notes**
 
-- Dedicated workspaces for support, warehouse, delivery, and finance are not named in the PDF; they are modelled as admin-console subareas until [DEC-011](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) is resolved.
-- Native mobile apps and additional channels are conditional and must not be treated as launch scope without [DEC-016](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) and [DEC-024](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm).
+- G7 approves a separate admin portal with centralized auth and shared PostgreSQL. Dedicated operational workspaces for support, warehouse, delivery, and finance remain subareas until the rest of [DEC-011](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) is resolved.
+- Native mobile apps and additional channels are conditional and must not be treated as launch scope without [DEC-016](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) and [DEC-024](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm); optional Google sign-in is approved under G6.
 
 ---
 
@@ -78,7 +78,7 @@ flowchart LR
 |---|---|---|---|---|
 | ARC-PRES-001 | Customer storefront | Public catalogue, search, product detail, cart, checkout, account, orders, returns, reviews, support entry points, SEO pages. | Mandatory | [FR-DISC-*](../requirements/SRS.md#34-storefront-search--product-discovery), [FR-CUS-*](../requirements/SRS.md#33-customer-accounts--crm), [UX-PRES-001](../requirements/ACCEPTANCE-CRITERIA.md) |
 | ARC-PRES-002 | Vendor portal | Onboarding, KYC submission, store profile, products, inventory, prices, orders, shipments, returns, commissions, payouts, staff management. | Mandatory | [FR-VEN-*](../requirements/SRS.md#32-vendor--seller-management) |
-| ARC-PRES-003 | Admin console | Platform dashboards, user/vendor/catalogue/order/payment/return administration, moderation, configuration, audit, and role-aware operational subareas. | Mandatory | [FR-ADM-*](../requirements/SRS.md#312-admin-console--platform-configuration), [SRS-ROLE-011–SRS-ROLE-015](../requirements/SRS.md#2-user-roles-and-portals) |
+| ARC-PRES-003 | Separate admin portal | Platform dashboards, user/vendor/catalogue/order/payment/return administration, moderation, configuration, audit, and role-aware operational subareas in a separate frontend that consumes centralized auth and shared PostgreSQL. | Mandatory | [FR-ADM-*](../requirements/SRS.md#312-admin-console--platform-configuration), [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) |
 | ARC-PRES-004 | Optional mobile apps | Customer, vendor, and delivery app surfaces using shared API contracts. | Conditional | [FR-MOB-002](../requirements/SRS.md#319-mobile--multi-channel), [DEC-016](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) |
 | ARC-PRES-005 | Design system | Shared components, responsive patterns, accessible forms, error states, and status indicators across clients. | Mandatory | [UX-PRES-001](../requirements/ACCEPTANCE-CRITERIA.md), [NFR-ACC-001](../requirements/SRS.md#5-non-functional-requirements) |
 
@@ -87,9 +87,9 @@ flowchart LR
 | ID | Rule | Status |
 |---|---|---|
 | ARC-PRES-RULE-001 | Clients must not calculate final payable amounts, tax, commission, or stock commitments as authoritative values. | Mandatory |
-| ARC-PRES-RULE-002 | Sensitive admin actions require explicit permission checks and, where decided, step-up authentication. | Mandatory; step-up details depend on DEC-010 |
+| ARC-PRES-RULE-002 | Sensitive admin actions require explicit permission checks and approved step-up authentication. | Mandatory under G1/G2 |
 | ARC-PRES-RULE-003 | Web and optional mobile clients consume the same versioned API contracts; mobile-specific endpoints must be justified. | Mandatory |
-| ARC-PRES-RULE-004 | Portal decomposition must follow [DEC-011](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm). | Decision required |
+| ARC-PRES-RULE-004 | The separate admin portal is approved under G7; remaining operational workspace decomposition must follow [DEC-011](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm). | Partly approved; remainder decision required |
 
 ---
 
@@ -314,3 +314,18 @@ Extraction is an evolution option, not current scope. Any extraction must preser
 | §10 QA | [ACCEPTANCE-CRITERIA.md](../requirements/ACCEPTANCE-CRITERIA.md) |
 | §11 DevOps | ARC-DEP-* |
 | §16 decisions to confirm | ARC-ADR candidates, decision gates in this document |
+
+## 13. Approved G1–G8 architecture addendum
+
+Approved decisions are recorded in [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions); they do not resolve unrelated `DEC-*` items.
+
+| Gate | Architecture effect |
+|---|---|
+| G1 | Central backend MFA policy engine and step-up guard enforce the approved role policy. |
+| G2 | NestJS identity/session modules use Redis-backed opaque sessions, HttpOnly cookies, and CSRF protection. |
+| G3 | Protected routes use a server-side unverified-session allowlist limited to verification and resend-verification. |
+| G4 | Auth TTLs, lockout limits, MFA limits, recovery codes, resend limits, and retention jobs use approved validated configuration. |
+| G5 | Guest identity and guest-order association modules preserve secure guest state through verified registration. |
+| G6 | External identity adapter supports optional Google sign-in with explicit secure linking. |
+| G7 | Separate admin portal consumes centralized auth, shared RBAC, shared sessions, and shared PostgreSQL. |
+| G8 | Repository layout is a pnpm workspaces monorepo using the approved stack. |

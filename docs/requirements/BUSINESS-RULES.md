@@ -12,6 +12,7 @@
 | **Mandatory** | Directly stated in the PDF or required by a scope requirement/checklist. |
 | **Conditional** | Applies only when the PDF’s qualifier applies, e.g. “if enabled”, “where supported”, “subject to policy”. |
 | **Decision required** | The PDF leaves a value, policy, model, or state transition unresolved. See [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm). |
+| **Approved by G decision** | A human-approved G1–G8 decision recorded in [SRS §12A](SRS.md#12a-approved-g1g8-decisions) resolves this item for implementation. |
 
 > This document does not define numeric thresholds, commission percentages, settlement schedules, return windows, SLA values, or other unresolved business values. Those remain [DEC-001](SRS.md#12-unresolved-decisions-and-items-to-confirm)–[DEC-024](SRS.md#12-unresolved-decisions-and-items-to-confirm).
 
@@ -61,7 +62,7 @@ stateDiagram-v2
 | BR-VEN-005 | Vendor dashboard reports sales, orders, returns, inventory, ratings, commissions, and payouts. | Mandatory | [FR-VEN-005](SRS.md#32-vendor--seller-management) |
 | BR-VEN-006 | Vendor-specific listing, pricing, stock, shipping settings, and fulfilment preferences are maintained by the vendor. | Mandatory | [FR-VEN-006](SRS.md#32-vendor--seller-management) |
 | BR-VEN-007 | Admin product moderation and vendor policy compliance apply. | Mandatory | [FR-VEN-007](SRS.md#32-vendor--seller-management) |
-| BR-VEN-008 | Commission plans can be defined by vendor, category, product, or campaign using fixed and percentage models. | Mandatory | [FR-VEN-008](SRS.md#32-vendor--seller-management), [BR-FIN-008](#8-finance-settlement-and-ledger-rules) |
+| BR-VEN-008 | Commission plans can be defined by vendor, category, product, or campaign using fixed and percentage models; numeric values remain unresolved. | Mandatory; values decision required | [FR-VEN-008](SRS.md#32-vendor--seller-management), [DEC-006](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
 | BR-VEN-009 | Vendor subscription plans and feature entitlements apply only if subscriptions are enabled. | Conditional | [FR-VEN-009](SRS.md#32-vendor--seller-management), [DEC-016](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
 | BR-VEN-010 | Settlement statements, payout requests/approvals, payment status, and reconciliation are vendor-visible functions. | Mandatory | [FR-VEN-010](SRS.md#32-vendor--seller-management) |
 | BR-VEN-011 | Vendor performance scorecards include service-level metrics, cancellation rate, and return rate. | Mandatory | [FR-VEN-011](SRS.md#32-vendor--seller-management) |
@@ -73,7 +74,7 @@ stateDiagram-v2
 
 | ID | Business rule | Status | Source / cross-reference |
 |---|---|---|---|
-| BR-CUS-001 | Registration/login/logout, email/phone verification, and password reset are customer account functions; social sign-in is optional. | Mandatory; social sign-in conditional | [FR-CUS-001](SRS.md#33-customer-accounts--crm) |
+| BR-CUS-001 | Registration/login/logout, email/phone verification, and password reset are customer account functions; optional Google sign-in requires explicit secure linking. | Mandatory; Google sign-in approved as optional | [FR-CUS-001](SRS.md#33-customer-accounts--crm), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) |
 | BR-CUS-002 | Customer profile, preferences, communication consent, and account security settings are maintained. | Mandatory | [FR-CUS-002](SRS.md#33-customer-accounts--crm) |
 | BR-CUS-003 | A customer may have multiple saved addresses and a default address; addresses are validated. | Mandatory | [FR-CUS-003](SRS.md#33-customer-accounts--crm) |
 | BR-CUS-004 | Customer segmentation, tags, account status, and support history are maintained. | Mandatory | [FR-CUS-004](SRS.md#33-customer-accounts--crm) |
@@ -104,7 +105,7 @@ stateDiagram-v2
 | ID | Business rule | Status | Source / cross-reference |
 |---|---|---|---|
 | BR-CHK-001 | Cart lines can be added, updated, removed, quantity-checked, saved for later, and persisted. | Mandatory | [FR-CHK-001](SRS.md#36-cart-checkout--order-placement) |
-| BR-CHK-002 | Guest and authenticated checkout are supported subject to business policy. | Conditional | [FR-CHK-002](SRS.md#36-cart-checkout--order-placement), [DEC-012](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-CHK-002 | Guest and authenticated checkout are supported. Guest identity is secure; eligible guest orders associate only after verified registration and never by unverified email alone. | Mandatory; eligibility details decision required | [FR-CHK-002](SRS.md#36-cart-checkout--order-placement), [DEC-012](SRS.md#12-unresolved-decisions-and-items-to-confirm), [SRS §12A](SRS.md#12a-approved-g1g8-decisions) |
 | BR-CHK-003 | Checkout includes address selection, shipping method selection, delivery estimate, and order summary. | Mandatory | [FR-CHK-003](SRS.md#36-cart-checkout--order-placement) |
 | BR-CHK-004 | Coupon, gift card, or wallet application must provide transparent calculation. | Conditional for gift card/wallet | [FR-CHK-004](SRS.md#36-cart-checkout--order-placement) |
 | BR-CHK-005 | Tax, shipping, discount, and final payable amount are calculated on the server. | Mandatory | [FR-CHK-005](SRS.md#36-cart-checkout--order-placement), [AC-001](ACCEPTANCE-CRITERIA.md) |
@@ -116,11 +117,12 @@ stateDiagram-v2
 flowchart TD
     A[Cart] --> B[Address and shipping selection]
     B --> C[Server calculates tax, shipping, discounts, final total]
-    C --> D[Reserve inventory with expiry]
-    D --> E{Order submission}
-    E -- success --> F[Order created with idempotency protection]
-    E -- failure/timeout --> G[Release reservation safely]
-    F --> H[Payment flow]
+    C --> D[Atomic checkout transaction]
+    D --> E[Validate idempotency and create order]
+    E --> F[Reserve inventory with expiry]
+    F -- success --> G[Commit order and reservation]
+    F -- failure/timeout --> H[Roll back or release reservation safely]
+    G --> I[Payment flow]
 ```
 
 ---
@@ -154,7 +156,7 @@ flowchart TD
 | BR-ORD-006 | Cancellation before/after fulfilment follows policy; partial cancellation only where supported. | Conditional | [FR-ORD-006](SRS.md#39-order-management--fulfilment), [DEC-006](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
 | BR-ORD-007 | Order editing rules, invoice generation, and internal notes are supported. | Mandatory | [FR-ORD-007](SRS.md#39-order-management--fulfilment) |
 | BR-ORD-008 | Bulk order processing, exception queues, and operational dashboards are supported. | Mandatory | [FR-ORD-008](SRS.md#39-order-management--fulfilment) |
-| BR-ORD-009 | Delivery confirmation and proof-of-delivery reference apply where supported. | Conditional | [FR-ORD-009](SRS.md#39-order-management--fulfilment), [DEC-004](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
+| BR-ORD-009 | Delivery confirmation and proof-of-delivery reference apply where supported. | Conditional | [FR-ORD-009](SRS.md#39-order-management--fulfilment), [INT-SHIP](../architecture/SYSTEM-ARCHITECTURE.md), [DEC-005](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
 | BR-SHIP-001 | Shipping zones, serviceability, package dimensions/weight, and rate calculation apply. | Mandatory | [FR-SHIP-001](SRS.md#310-shipping--logistics) |
 | BR-SHIP-002 | Courier aggregator or carrier integrations handle shipment creation/cancellation; model is unresolved. | Mandatory capability; model decision required | [FR-SHIP-002](SRS.md#310-shipping--logistics), [DEC-005](SRS.md#12-unresolved-decisions-and-items-to-confirm) |
 | BR-SHIP-003 | AWB/tracking number, shipping label, and manifest generation are required. | Mandatory | [FR-SHIP-003](SRS.md#310-shipping--logistics) |
@@ -290,3 +292,18 @@ flowchart TD
 | Reviews/support | BR-REV-001–BR-REV-005, BR-SUP-001–BR-SUP-006 |
 | Marketing/content/reporting | BR-MKT-001–BR-MKT-007, BR-CMS-001–BR-CMS-005, BR-BI-001 |
 | Admin/security | BR-ADM-001–BR-ADM-007, BR-SEC-001–BR-SEC-004 |
+
+## 14. Approved G1–G8 rule addendum
+
+The following approved decisions modify how existing business rules are implemented. Existing IDs remain unchanged.
+
+| Gate | Business-rule effect |
+|---|---|
+| G1 | Enforce the approved MFA policy by role; Delivery/Logistics remains configurable pending further approval. |
+| G2 | Session revocation, expiry, HttpOnly cookies, and CSRF apply to all cookie-authenticated state changes. |
+| G3 | Unverified authenticated sessions are limited to email verification and resend-verification. |
+| G4 | Use the approved auth TTL, lockout, MFA, resend, recovery-code, and retention values from `docs/audits/AUTHENTICATION-IMPLEMENTATION-PLAN.md`. |
+| G5 | Guest checkout is allowed; only eligible guest orders associate after verified registration, never by unverified email alone. |
+| G6 | Optional Google sign-in requires explicit linking; no email-only auto-link and no role/MFA changes. |
+| G7 | The separate admin portal uses centralized auth, shared RBAC, shared sessions, and shared PostgreSQL. |
+| G8 | Use pnpm workspaces with the approved TradeOrbit stack. |

@@ -12,6 +12,7 @@
 | **Mandatory** | Must pass before the related requirement can be accepted. |
 | **Conditional** | Applies only when the PDF’s “if enabled/where supported/subject to policy” qualifier is in scope. |
 | **Decision required** | Cannot be finally accepted until the unresolved decision is made. See [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm). |
+| **Approved by G decision** | A human-approved G1–G8 decision recorded in [SRS §12A](SRS.md#12a-approved-g1g8-decisions) is the acceptance basis. |
 
 > This document does not assert numeric latency, availability, RPO/RTO, commission, tax, settlement, return-window, or SLA values. Those remain unresolved in [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm).
 
@@ -180,7 +181,8 @@
 | ID | Deliverable | Acceptance outcome | SRS reference | Status |
 |---|---|---|---|---|
 | DEL-REQ-001 | Requirements documentation | SRS, business rules, user stories, and acceptance criteria exist, use consistent IDs, and cover the PDF’s functional scope. | [SRS-OV-007](SRS.md#1-project-overview) | Mandatory |
-| DEL-DESIGN-001 | Architecture and data design | System architecture, conceptual ERD, API design, security architecture, and performance strategy are documented and cross-referenced. | [SRS-OV-007](SRS.md#1-project-overview), [NFR-MAINT-001](SRS.md#5-non-functional-requirements) | Mandatory |
+| DEL-DESIGN-001 | UI/UX design package acceptance | Information architecture, wireframes, Figma UI kit, prototypes, high-fidelity screens, and documented states pass [UX-PRES-001](#ux-pres-001--uiux-and-design-deliverables). | [UX-*](SRS.md#14-uiux-and-design-deliverables), [DEL-UX-001](#5-project-deliverable-acceptance) | Mandatory |
+| DEL-ARCH-DOC-001 | Architecture and data design acceptance | System architecture, conceptual ERD, API design, security architecture, and performance strategy are documented and cross-referenced. | [DEL-ARCH-001](SRS.md#15-project-deliverables), [NFR-MAINT-001](SRS.md#5-non-functional-requirements) | Mandatory |
 | DEL-UX-001 | UI/UX design package | Wireframes, UI kit/design system, prototypes, and accessibility annotations pass [UX-PRES-001](#ux-pres-001--uiux-and-design-deliverables). | [TEC-021](SRS.md#6-recommended-technology-stack) | Mandatory |
 | DEL-API-001 | API contract | OpenAPI/Swagger documentation defines resources, schemas, errors, authentication, pagination, idempotency, and webhooks. | [API-002](SRS.md#8-data-api-and-integration-summary) | Mandatory |
 | DEL-TEST-001 | Test plan and cases | Unit, integration, API, E2E, workflow, security, performance, accessibility, and regression coverage is documented and mapped to [AC-QA-*](#3-qa-acceptance-criteria). | [QA-001](SRS.md#10-testing-and-quality-assurance)–[QA-009](SRS.md#10-testing-and-quality-assurance) | Mandatory |
@@ -197,22 +199,22 @@
 |---|---|---|---|---|
 | Product catalogue | [FR-CAT-001–FR-CAT-010](SRS.md#31-product-catalogue--product-listing) | [US-VEND](USER-STORIES.md#vendor--seller), [US-CUST](USER-STORIES.md#customer) | AC-003, AC-QA-001, AC-QA-003 | Product types conditional |
 | Vendor management | [FR-VEN-001–FR-VEN-012](SRS.md#32-vendor--seller-management) | [US-VEND](USER-STORIES.md#vendor--seller), [US-VENDORSTAFF-001](USER-STORIES.md#vendor-staff) | AC-002, AC-008, AC-009 | Model/subscriptions decision dependent |
-| Customer accounts | [FR-CUS-001–FR-CUS-008](SRS.md#33-customer-accounts--crm) | [US-CUST](USER-STORIES.md#customer) | AC-001, AC-007, AC-PRIV-001 | Wallet/loyalty/social sign-in conditional |
+| Customer accounts | [FR-CUS-001–FR-CUS-008](SRS.md#33-customer-accounts--crm) | [US-CUST](USER-STORIES.md#customer) | AC-001, AC-007, AC-PRIV-001, AC-AUTH-006 | Wallet/loyalty conditional; Google sign-in optional and approved under G6 |
 | Search and discovery | [FR-DISC-001–FR-DISC-007](SRS.md#34-storefront-search--product-discovery) | [US-GUEST](USER-STORIES.md#guest-visitor), [US-CUST](USER-STORIES.md#customer) | AC-001, AC-QA-005, AC-ACC-001 | Search quality targets pending DEC-023 |
 | Pricing/tax/promotions | [FR-PRICE-001–FR-PRICE-007](SRS.md#35-pricing-tax--promotions) | [US-CUST](USER-STORIES.md#customer), [US-VEND](USER-STORIES.md#vendor--seller) | AC-001, AC-QA-001 | Tax source and values pending DEC-001/DEC-022 |
-| Cart/checkout | [FR-CHK-001–FR-CHK-008](SRS.md#36-cart-checkout--order-placement) | [US-GUEST](USER-STORIES.md#guest-visitor), [US-CUST](USER-STORIES.md#customer) | AC-001, AC-004, AC-005 | Guest checkout policy pending DEC-012 |
+| Cart/checkout | [FR-CHK-001–FR-CHK-008](SRS.md#36-cart-checkout--order-placement) | [US-GUEST](USER-STORIES.md#guest-visitor), [US-CUST](USER-STORIES.md#customer) | AC-001, AC-004, AC-005, AC-AUTH-005 | Guest checkout approved under G5; eligibility details decision required |
 | Payments/refunds/finance | [FR-PAY-001–FR-PAY-009](SRS.md#37-payments-refunds--finance) | [US-CUST](USER-STORIES.md#customer), [US-FINANCE](USER-STORIES.md#finance-operator) | AC-006, AC-007, AC-008 | Provider/COD pending DEC-004 |
 | Inventory/warehouse | [FR-INV-001–FR-INV-009](SRS.md#38-inventory-procurement--warehouse) | [US-WAREHOUSE](USER-STORIES.md#warehouse--fulfilment-operator), [US-VEND](USER-STORIES.md#vendor--seller) | AC-005, AC-007 | Multi-warehouse/procurement pending DEC-016 |
 | Orders/fulfilment | [FR-ORD-001–FR-ORD-009](SRS.md#39-order-management--fulfilment) | [US-CUST](USER-STORIES.md#customer), [US-VEND](USER-STORIES.md#vendor--seller), [US-WAREHOUSE](USER-STORIES.md#warehouse--fulfilment-operator) | AC-001, AC-004, AC-007 | State machines pending DEC-021 |
 | Shipping/logistics | [FR-SHIP-001–FR-SHIP-007](SRS.md#310-shipping--logistics) | [US-DELIVERY](USER-STORIES.md#delivery--logistics-operator), [US-VEND](USER-STORIES.md#vendor--seller) | AC-001, AC-004, AC-006 | Shipping model pending DEC-005 |
 | Returns/exchanges/refunds | [FR-RET-001–FR-RET-008](SRS.md#311-returns-exchanges--refunds) | [US-CUST](USER-STORIES.md#customer), [US-WAREHOUSE](USER-STORIES.md#warehouse--fulfilment-operator), [US-FINANCE](USER-STORIES.md#finance-operator) | AC-007, AC-006 | Return/commission reversal policy pending DEC-006 |
-| Admin console | [FR-ADM-001–FR-ADM-007](SRS.md#312-admin-console--platform-configuration) | [US-ADMIN](USER-STORIES.md#marketplace-administrator), [US-SUPERADMIN](USER-STORIES.md#super-administrator) | AC-002, AC-003, AC-009 | Mandatory |
-| Marketing/loyalty | [FR-MKT-001–FR-MKT-007](SRS.md#313-marketing-loyalty--engagement) | [US-CUST](USER-STORIES.md#customer), [US-ADMIN](USER-STORIES.md#marketplace-administrator) | AC-QA-004, AC-QA-005 | Optional features pending DEC-016 |
+| Admin console | [FR-ADM-001–FR-ADM-007](SRS.md#312-admin-console--platform-configuration) | [US-ADMIN](USER-STORIES.md#marketplace-administrator), [US-SUPERADMIN](USER-STORIES.md#super-administrator) | AC-002, AC-003, AC-009, AC-AUTH-007 | Mandatory; separate portal approved under G7 |
+| Marketing/loyalty | [FR-MKT-001–FR-MKT-007](SRS.md#313-marketing-loyalty--engagement) | [US-CUST](USER-STORIES.md#customer), [US-ADMIN](USER-STORIES.md#marketplace-administrator) | AC-MKT-001, AC-MKT-002, AC-QA-004, AC-QA-005 | Transactional notifications mandatory; other marketing features conditional under DEC-016 |
 | Reviews/ratings | [FR-REV-001–FR-REV-005](SRS.md#314-reviews-ratings--moderation) | [US-CUST](USER-STORIES.md#customer), [US-VEND](USER-STORIES.md#vendor--seller) | AC-001, AC-009, AC-QA-003 | Exact eligibility pending DEC-021 |
 | Support/disputes | [FR-SUP-001–FR-SUP-006](SRS.md#315-customer-support--disputes) | [US-SUPPORT](USER-STORIES.md#support-agent), [US-CUST](USER-STORIES.md#customer) | AC-007, AC-009 | Live chat and SLA values pending DEC-017/DEC-009 |
 | Content/SEO | [FR-CMS-001–FR-CMS-005](SRS.md#316-content-management--seo) | [US-ADMIN](USER-STORIES.md#marketplace-administrator), [US-SUPPORT](USER-STORIES.md#support-agent) | UX-PRES-001, AC-QA-004 | Blog conditional on DEC-017 |
 | Reports/BI | [FR-BI-001–FR-BI-007](SRS.md#317-reports--business-intelligence) | [US-VEND](USER-STORIES.md#vendor--seller), [US-ADMIN](USER-STORIES.md#marketplace-administrator), [US-FINANCE](USER-STORIES.md#finance-operator) | AC-008, AC-009, AC-QA-003 | Mandatory |
-| Security/privacy/compliance | [FR-COMP-001–FR-COMP-008](SRS.md#318-security-privacy--compliance) | [US-SEC-001](USER-STORIES.md#privacy-and-security-stories), [US-PRIV-001](USER-STORIES.md#privacy-and-security-stories) | AC-006, AC-009, AC-QA-006, AC-SEC-001, AC-PRIV-001 | Jurisdiction/MFA/PCI boundary pending DEC-001/DEC-010/DEC-018 |
+| Security/privacy/compliance | [FR-COMP-001–FR-COMP-008](SRS.md#318-security-privacy--compliance) | [US-SEC-001](USER-STORIES.md#privacy-and-security-stories), [US-PRIV-001](USER-STORIES.md#privacy-and-security-stories) | AC-006, AC-009, AC-QA-006, AC-SEC-001, AC-AUTH-001–AC-AUTH-004, AC-PRIV-001 | MFA resolved by G1 except Delivery/Logistics; jurisdiction and PCI boundary pending DEC-001/DEC-018 |
 | Mobile/multi-channel | [FR-MOB-001–FR-MOB-005](SRS.md#319-mobile--multi-channel) | [US-CUST](USER-STORIES.md#customer), [US-DELIVERY](USER-STORIES.md#delivery--logistics-operator) | AC-ACC-001, AC-QA-005 | Native apps/B2B pending DEC-016/DEC-024 |
 | Platform operations | [FR-OPS-001–FR-OPS-006](SRS.md#320-platform-operations--reliability) | [US-OPS-001](USER-STORIES.md#operational-stories) | AC-OPS-001, AC-QA-002, AC-QA-005, AC-QA-006, DEL-OPS-001 | RPO/RTO/SLO pending DEC-009/DEC-020 |
 
@@ -233,7 +235,7 @@ These module-level IDs provide the acceptance references used by [USER-STORIES.m
 | AC-CHK-001 | Cart add/update/remove/quantity/save-for-later operations persist correctly. | Cart API test. | Mandatory |
 | AC-CHK-002 | Checkout totals are calculated on the server and client-supplied totals are ignored. | Tampering test. | Mandatory |
 | AC-CHK-003 | Coupon, gift-card, or wallet application is transparent where enabled. | Checkout E2E. | Conditional |
-| AC-CUST-001 | Registration, login, logout, verification, password reset, and optional social sign-in work according to policy. | Identity E2E. | Mandatory; social sign-in conditional |
+| AC-CUST-001 | Registration, login, logout, verification, password reset, and optional Google sign-in with explicit linking work according to policy. | Identity E2E. | Mandatory; Google sign-in optional and approved |
 | AC-CUST-002 | Profile, preferences, communication consent, and security settings are updated and auditable where required. | Account API test. | Mandatory |
 | AC-CUST-003 | Multiple addresses and default address selection are validated and persisted. | Address API test. | Mandatory |
 | AC-CUST-004 | Customers can view order history, invoices, returns, refunds, wishlist, saved items, and recently viewed products. | Account E2E. | Mandatory |
@@ -273,6 +275,16 @@ These module-level IDs provide the acceptance references used by [USER-STORIES.m
 | AC-MOB-002 | Optional customer/vendor/delivery apps support push notifications and deep links where in scope. | Mobile app test. | Conditional |
 | AC-MOB-003 | Web and mobile clients use consistent API contracts. | Contract test. | Mandatory |
 | AC-MOB-004 | Optional B2B, social commerce, and additional channels are implemented only when confirmed in scope. | Scope/configuration review. | Conditional |
+| AC-MKT-001 | Mandatory email/SMS/push notifications are delivered through approved providers with templates, bounce handling, suppression lists, and delivery logs. | Notification integration and delivery-log test. | Mandatory |
+| AC-MKT-002 | Promotional and abandoned-cart messaging is sent only for allowed purposes and channels with recorded consent. | Consent and suppression test. | Mandatory where messaging used |
+| AC-AUTH-001 | MFA is enforced for Customer optional, Vendor Owner/Vendor Staff/Admin/Super Admin/Support/Finance/Warehouse-Fulfilment mandatory, and Delivery/Logistics configurable pending further approval. | Role-by-role API/E2E matrix. | Mandatory; Delivery/Logistics configurable pending approval |
+| AC-AUTH-002 | Redis-backed opaque sessions use HttpOnly cookies, CSRF protection, server-side revocation, and approved TTLs. | Session, CSRF, and revocation tests. | Mandatory |
+| AC-AUTH-003 | Unverified authenticated sessions can access only email verification and resend-verification. | Restricted-session allowlist test. | Mandatory |
+| AC-AUTH-004 | G4 password, session, lockout, MFA, recovery-code, resend, retention, and log-redaction values are enforced and configurable. | Configuration, retention, and log-inspection tests. | Mandatory |
+| AC-AUTH-005 | Guest checkout uses secure identity and associates only eligible orders after verified registration, never by unverified email alone. | Guest-order association and takeover test. | Mandatory; eligibility details decision required |
+| AC-AUTH-006 | Google sign-in uses explicit secure linking, state/PKCE, verified provider subject, and preserves roles and MFA policy. | Provider and account-linking E2E. | Optional and approved |
+| AC-AUTH-007 | Separate admin portal uses centralized backend auth, shared RBAC, shared sessions, shared PostgreSQL, CSRF, and audit events. | Admin portal and auth-drift test. | Mandatory |
+| AC-AUTH-008 | Repository uses pnpm workspaces with `pnpm-workspace.yaml`, `pnpm-lock.yaml`, and the approved stack. | Repository structure check. | Mandatory |
 
 ## 8. Acceptance pass rule
 
@@ -280,6 +292,6 @@ These module-level IDs provide the acceptance references used by [USER-STORIES.m
 |---|---|
 | Mandatory criteria | All mandatory criteria for the in-scope release must pass. |
 | Conditional criteria | Conditional criteria apply only when the corresponding feature is confirmed in scope. |
-| Decision-required criteria | Acceptance is blocked until the relevant decision in [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm) is recorded. |
+| Decision-required criteria | Acceptance is blocked until the relevant decision in [SRS §12](SRS.md#12-unresolved-decisions-and-items-to-confirm) is recorded; G1–G8 decisions in [SRS §12A](SRS.md#12a-approved-g1g8-decisions) are accepted as recorded. |
 | Evidence | Each criterion must link to a test result, review record, demo recording, or signed approval. |
 | Regression | Critical journeys must be re-run after deployment according to [QA-009](SRS.md#10-testing-and-quality-assurance). |

@@ -2,7 +2,7 @@
 
 This folder contains beginner-friendly copies of the project's Markdown documentation.
 
-Use these files to learn the project in simple English. They do not change the original documents. Each copy keeps the original technical terms and IDs, explains them in simpler words, and then includes the full original document below a section called **Original document content (unchanged)**.
+Use these files to learn the project in simple English. They do not change the original documents. Each copy keeps the original technical terms and IDs and explains them in simpler words. The current canonical documents are linked from each guide and from the source list below.
 
 The PDF file was not changed. No application code was created or changed.
 
@@ -93,3 +93,13 @@ If you want to understand checkout:
 - Do not invent payment, tax, shipping, commission, or launch decisions.
 - Do not treat a recommendation or conditional item as final scope unless the unresolved decision is answered.
 - Do not mark any feature as complete without implementation evidence and tests.
+
+## Current approved decisions
+
+G1–G8 were approved on 2026-11-22. The beginner copies keep their original learning text, so read these current sources when a document describes a decision as pending:
+
+- `../requirements/SRS.md` §12A — approved G1–G8 decisions.
+- [AUTHENTICATION-IMPLEMENTATION-PLAN.md](../audits/AUTHENTICATION-IMPLEMENTATION-PLAN.md) — exact auth, session, MFA, guest, Google, retention, and testing decisions.
+- `../audits/COMPLETE-PROJECT-AUDIT.md` — current audit findings and implementation readiness.
+
+In simple terms: MFA is approved by role, Redis-backed sessions with HttpOnly cookies and CSRF are approved, unverified sessions are restricted, guest checkout and optional Google sign-in are approved with strict association/linking rules, the admin portal is separate but shares backend auth and PostgreSQL, and the repository uses pnpm workspaces. Transactional notifications are mandatory; other marketing features remain conditional unless separately decided.

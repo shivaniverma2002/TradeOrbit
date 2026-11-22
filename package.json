@@ -1,0 +1,36 @@
+{
+  "name": "tradeorbit",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TradeOrbit e-commerce marketplace monorepo",
+  "license": "UNLICENSED",
+  "packageManager": "pnpm@10.11.0",
+  "engines": {
+    "node": ">=24.0.0 <25.0.0",
+    "pnpm": ">=10.11.0 <11.0.0"
+  },
+  "scripts": {
+    "dev": "pnpm -r --parallel --if-present dev",
+    "dev:customer-web": "pnpm --filter @tradeorbit/customer-web --if-present dev",
+    "dev:vendor-web": "pnpm --filter @tradeorbit/vendor-web --if-present dev",
+    "dev:admin-web": "pnpm --filter @tradeorbit/admin-web --if-present dev",
+    "dev:api": "pnpm --filter @tradeorbit/api --if-present dev",
+    "build": "pnpm -r --if-present build",
+    "build:packages": "pnpm -r --filter \"./packages/**\" --if-present build",
+    "build:apps": "pnpm -r --filter \"./apps/**...\" --if-present build",
+    "lint": "pnpm -r --if-present lint",
+    "lint:fix": "pnpm -r --if-present lint:fix",
+    "format": "prettier --check \"*.{json,mjs,cjs,yml,yaml}\" \".github/**/*.{yml,yaml,json,md}\" \"apps/**/*.{ts,tsx,js,jsx,mjs,cjs,json,css,scss,md}\" \"packages/**/*.{ts,tsx,js,jsx,mjs,cjs,json,css,scss,md}\" \"infrastructure/**/*.{ts,tsx,js,jsx,mjs,cjs,json,yml,yaml,md,sh}\" \"infrastructure/**/Dockerfile\" --ignore-unknown --no-error-on-unmatched-pattern",
+    "format:write": "prettier --write \"*.{json,mjs,cjs,yml,yaml}\" \".github/**/*.{yml,yaml,json,md}\" \"apps/**/*.{ts,tsx,js,jsx,mjs,cjs,json,css,scss,md}\" \"packages/**/*.{ts,tsx,js,jsx,mjs,cjs,json,css,scss,md}\" \"infrastructure/**/*.{ts,tsx,js,jsx,mjs,cjs,json,yml,yaml,md,sh}\" \"infrastructure/**/Dockerfile\" --ignore-unknown --no-error-on-unmatched-pattern",
+    "typecheck": "pnpm -r --if-present typecheck",
+    "test": "pnpm -r --if-present test",
+    "test:unit": "pnpm -r --if-present test:unit",
+    "test:integration": "pnpm -r --if-present test:integration",
+    "test:e2e": "pnpm -r --if-present test:e2e",
+    "clean": "pnpm -r --if-present clean"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3"
+  }
+}

@@ -339,3 +339,7 @@ Validation was run after all edits.
 **NOT APPROVED — waiting for human approval.**
 
 The revised SRS is ready for re-audit, but it must not be treated as an approved requirements baseline until a human explicitly approves it and the unresolved decisions are handled through the appropriate decision process.
+
+## 7. Current status addendum
+
+This report is a historical revision snapshot. G1–G8 were later approved and are recorded in [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions). Later corrections are recorded in `COMPLETE-PROJECT-AUDIT.md`.

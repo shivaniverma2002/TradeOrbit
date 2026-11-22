@@ -831,3 +831,11 @@ Unresolved decisions from `docs/requirements/SRS.md:601-624`:
 8. Add unit, integration, API, E2E, security, accessibility, and performance tests mapped to `QA-001`–`QA-009`, `AC-JOURNEY-*`, and `PERF-TEST-*`.
 9. Add Docker, Compose, CI/CD, staging smoke tests, approvals, rollback, monitoring, centralized logs/metrics, backups, restore drills, and runbooks.
 10. Re-run this verification after implementation; update statuses only with concrete file paths, endpoint behavior, test names, commands, and passing outputs.
+
+## 12. Current status addendum
+
+This report remains a historical documentation-only verification baseline. It is not a current statement of approved decisions or implementation progress.
+
+- G1–G8 were approved on 2026-11-22 and are recorded in [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) and `AUTHENTICATION-IMPLEMENTATION-PLAN.md`.
+- `DEC-010`, `DEC-012`, and the Google sign-in part of `DEC-016` are resolved by G1, G5, and G6; auth retention values within `DEC-020` are resolved by G4. Other listed decisions remain unresolved.
+- The repository was still documentation-only at the time of the complete audit; see `COMPLETE-PROJECT-AUDIT.md` for current verification commands and readiness status.

@@ -280,7 +280,7 @@ Extraction triggers are recorded in ADRs per [ARC-ADR](SYSTEM-ARCHITECTURE.md). 
 | DEC-015 | Search migration threshold. | Search architecture and index plan. |
 | DEC-016 | Conditional launch scope. | Mobile, loyalty, multi-warehouse, B2B, and advanced feature load. |
 | DEC-019 | Load balancer, autoscaling, failover topology. | Availability design. |
-| DEC-020 | Numeric performance, availability, RPO/RTO, retention, breakpoints. | Final acceptance thresholds. |
+| DEC-020 | Numeric performance, availability, RPO/RTO, retention, breakpoints. | Auth retention/TTL values resolved by G4; other thresholds remain final acceptance gates. |
 | DEC-021 | Exact state machines and oversell policy details. | Concurrency and reservation rules. |
 | DEC-023 | Search quality targets. | Search acceptance criteria. |
 | DEC-024 | Whether advanced/mobile/multi-region features are mandatory day one. | Capacity model and MVP performance scope. |
@@ -297,3 +297,16 @@ Extraction triggers are recorded in ADRs per [ARC-ADR](SYSTEM-ARCHITECTURE.md). 
 | §10 testing and QA | PERF-010, [AC-QA-005](../requirements/ACCEPTANCE-CRITERIA.md) |
 | §11 DevOps/environments | PERF-008, PERF-AVAIL-*, [DEP-007](../requirements/SRS.md#11-devops-environments-and-deployment) |
 | §16 assumptions/decisions | PERF decision gates above |
+
+## 17. Approved G1–G8 performance addendum
+
+| Gate | Performance/reliability effect |
+|---|---|
+| G1 | MFA policy evaluation and step-up checks must be backend-enforced without bypassing endpoint permission checks. |
+| G2 | Budget one Redis session lookup per protected request; test session-store latency, revocation, and fail-closed behavior. |
+| G3 | Restricted-session checks are applied on every protected route before expensive business work. |
+| G4 | Benchmark Argon2id `19 MiB`, `2` iterations, parallelism `1`; test approved TTLs, rate limits, recovery codes, and retention jobs. |
+| G5 | Guest identity lookup and guest-order association are bounded, idempotent, and tested for duplicate/takeover cases. |
+| G6 | Google callback/link endpoints are rate-limited and tested for provider failures and replayed state. |
+| G7 | Separate admin portal shares backend capacity, database, session store, and audit pipeline; no second auth authority. |
+| G8 | pnpm workspace scripts standardize lint, typecheck, build, migration checks, and performance test execution. |

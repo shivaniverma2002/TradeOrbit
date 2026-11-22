@@ -28,7 +28,7 @@
 | API-006 | Webhook security | Verify signatures, prevent replay, handle retries, and dead-letter unprocessable events. | Mandatory | [API-WH](#9-webhooks) |
 | API-007 | Permission separation | Keep public, authenticated customer, vendor, support/operations, admin, and super-admin permissions distinct. | Mandatory | [SEC-AUTHZ-004](SECURITY-ARCHITECTURE.md) |
 | API-008 | Money handling | Clients never submit authoritative totals; server responses include explicit currency codes. | Mandatory | [DB-006](DATABASE-ERD.md), [BR-PRICE-008](../requirements/BUSINESS-RULES.md) |
-| API-009 | Transport | Use HTTPS/TLS everywhere; secure cookies or bearer-token flows according to the final auth design. | Mandatory | [SEC-TLS](SECURITY-ARCHITECTURE.md) |
+| API-009 | Transport | Use HTTPS/TLS everywhere; Redis-backed sessions use secure HttpOnly cookies with CSRF protection under G2. | Mandatory | [SEC-TLS](SECURITY-ARCHITECTURE.md), [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions) |
 
 ---
 
@@ -55,7 +55,7 @@ flowchart LR
 | API group | Audience | Base area | Status |
 |---|---|---|---|
 | Public catalogue/content | Anonymous and authenticated clients | `/api/v1/categories`, `/api/v1/products`, `/api/v1/search`, `/api/v1/content` | Mandatory |
-| Identity and customer | Customers and guest checkout flows | `/api/v1/auth`, `/api/v1/me`, `/api/v1/addresses` | Mandatory; guest policy pending DEC-012 |
+| Identity and customer | Customers and approved guest checkout flows | `/api/v1/auth`, `/api/v1/me`, `/api/v1/addresses` | Mandatory; guest checkout approved under G5 |
 | Cart/checkout/orders | Customers | `/api/v1/cart`, `/api/v1/checkout`, `/api/v1/orders` | Mandatory |
 | Vendor | Approved vendors and vendor staff | `/api/v1/vendor` | Mandatory |
 | Shipping/returns | Vendor, warehouse, delivery, customer where applicable | `/api/v1/shipments`, `/api/v1/returns` | Mandatory; portal access pending DEC-011 |
@@ -194,12 +194,12 @@ flowchart LR
 
 | Method | Path | Purpose | Permission | Status |
 |---|---|---|---|---|
-| GET | `/api/v1/cart` | Get current cart. | Public/customer; guest policy pending | Conditional guest support |
-| POST | `/api/v1/cart/items` | Add item to cart. | Public/customer; guest policy pending | Conditional guest support |
+| GET | `/api/v1/cart` | Get current cart. | Guest cart owner with secure guest identity or authenticated cart owner | Mandatory; guest checkout approved under G5; guest identity details remain to be documented |
+| POST | `/api/v1/cart/items` | Add item to cart. | Guest cart owner with secure guest identity or authenticated cart owner | Mandatory; guest checkout approved under G5; guest identity details remain to be documented |
 | PATCH | `/api/v1/cart/items/{id}` | Update quantity or save-for-later. | Cart owner | Mandatory |
 | DELETE | `/api/v1/cart/items/{id}` | Remove cart item. | Cart owner | Mandatory |
 | POST | `/api/v1/checkout/quote` | Server-calculate tax, shipping, discounts, final total. | Cart owner | Mandatory |
-| POST | `/api/v1/orders` | Create order idempotently and reserve stock. | Customer or permitted guest | Mandatory; guest policy pending DEC-012 |
+| POST | `/api/v1/orders` | Create order idempotently and reserve stock. | Guest with secure guest identity or authenticated customer | Mandatory; guest checkout approved under G5; guest-order eligibility and association of eligible orders with a subsequently verified account remain to be documented |
 | GET | `/api/v1/orders` | List customer orders. | Authenticated customer | Mandatory |
 | GET | `/api/v1/orders/{id}` | Order detail, fulfilment units, shipment summary. | Order owner or permitted operator | Mandatory |
 | POST | `/api/v1/orders/{id}/cancellation` | Request cancellation under policy. | Order owner or permitted operator | Conditional |
@@ -305,7 +305,7 @@ flowchart LR
 | API-PERM-005 | Admin/sub-admin | Endpoint and action permissions are fine-grained and server-enforced. | Mandatory |
 | API-PERM-006 | Super-admin | Global configuration, administrator management, and security settings. | Mandatory |
 | API-PERM-007 | Finance-sensitive | Refunds, commissions, payouts, settlement approval, and bank-reference changes require specific permissions and audit records. | Mandatory |
-| API-PERM-008 | Step-up | Sensitive admin actions may require step-up authentication if [DEC-010](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) confirms it. | Decision required |
+| API-PERM-008 | Step-up | Sensitive admin/finance actions require step-up authentication under the approved G1/G2 auth policy. | Mandatory |
 
 ---
 
@@ -414,7 +414,7 @@ sequenceDiagram
 | API-CHK-RULE-003 | Inventory reservation and order creation are atomic. | Mandatory |
 | API-CHK-RULE-004 | Failed/expired checkout releases reservations once. | Mandatory |
 | API-CHK-RULE-005 | Payment success is based on verified provider state, not client return URL alone. | Mandatory |
-| API-CHK-RULE-006 | Guest checkout is available only if [DEC-012](../requirements/SRS.md#12-unresolved-decisions-and-items-to-confirm) confirms it. | Decision required |
+| API-CHK-RULE-006 | Guest checkout is approved and allowed under G5; guest-order eligibility and verification-based association details remain unresolved and must follow [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions). | Mandatory; eligibility details decision required |
 
 ---
 
@@ -432,7 +432,7 @@ sequenceDiagram
 | API-WH-006 | Webhook handlers avoid long synchronous work; they persist the event and enqueue processing. | Recommendation |
 | API-WH-007 | Provider-specific payloads are translated by integration adapters into normalized domain events. | Mandatory | [INT-RULE-001](SYSTEM-ARCHITECTURE.md) |
 
-### API-WH-001 — Signed payment webhook
+### API-WH-PAY-001 — Signed payment webhook
 
 | Step | Expected behaviour |
 |---|---|
@@ -499,3 +499,18 @@ sequenceDiagram
 | §3.16 content/SEO | API-CMS |
 | §3.17 reports/BI | API-FIN, API-ADMIN |
 | §7 API/integration requirements | API-001–API-009, API-ERR, API-WH |
+
+## 13. Approved G1–G8 API addendum
+
+Approved decisions are recorded in [SRS §12A](../requirements/SRS.md#12a-approved-g1g8-decisions). The full auth endpoint catalogue is in `docs/audits/AUTHENTICATION-IMPLEMENTATION-PLAN.md`.
+
+| Gate | API effect |
+|---|---|
+| G1 | All protected endpoints enforce the approved role MFA policy; sensitive admin/finance actions require step-up. |
+| G2 | API auth uses Redis-backed opaque sessions via HttpOnly cookies, `X-CSRF-Token` on state changes, backend revocation, and generic auth errors. |
+| G3 | Non-allowlisted protected endpoints reject unverified sessions with a generic authorization error. |
+| G4 | OpenAPI documents approved TTLs, lockout/MFA/resend limits, recovery codes, retention hooks, and log-redaction rules. |
+| G5 | Add secure guest-session and verified guest-order claim endpoints; no unverified-email merge. |
+| G6 | Add Google start/callback/link/unlink endpoints with state/PKCE and explicit account linking. |
+| G7 | Admin portal endpoints use the same backend authorization, session, CSRF, and audit contracts as customer/vendor surfaces. |
+| G8 | OpenAPI generation and tests run in the pnpm workspaces monorepo with `pnpm-lock.yaml`. |
